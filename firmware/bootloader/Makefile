@@ -7,26 +7,25 @@ OBJCOPY:=avr-objcopy
 PROJECT_NAME:=bootloader
 BUILD_PATH:=build/
 COMMON_SRC_PATH:=../common/
-MODULES_SRC_PATH:=atxmega_modules/src/
 
 # Bootloader section byte address (NOT word address)
 BOOTSTART:=0x20000
 
 MCU:=atxmega128d4
-INCLUDES:= $(COMMON_SRC_PATH) $(MODULES_SRC_PATH) config
+INCLUDES:= $(COMMON_SRC_PATH) $(COMMON_SRC_PATH)atxmega_modules/src/ config
 CFLAGS:= -Os -Wall -std=gnu99 -ffunction-sections -fdata-sections
 LDFLAGS:= -Wl,--gc-sections,--section-start=.text=$(BOOTSTART) -Wl,-Map,$(BUILD_PATH)$(PROJECT_NAME).map
 EXECUTABLE:= $(PROJECT_NAME).elf
 
 SRC:= main.c
 SRC+= cli_commands.c
-SRC+= $(MODULES_SRC_PATH)/fifo.c
-SRC+= $(MODULES_SRC_PATH)/uart_io.c
-SRC+= $(MODULES_SRC_PATH)/cli.c
-SRC+= $(MODULES_SRC_PATH)/intel_hex.c
-SRC+= $(MODULES_SRC_PATH)/self_program.c
 
 COMMON_SRC:= init0.c
+COMMON_SRC+= atxmega_modules/src/fifo.c
+COMMON_SRC+= atxmega_modules/src/uart_io.c
+COMMON_SRC+= atxmega_modules/src/cli.c
+COMMON_SRC+= atxmega_modules/src/intel_hex.c
+COMMON_SRC+= atxmega_modules/src/self_program.c
 
 ####################################################################################################
 

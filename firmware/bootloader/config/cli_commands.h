@@ -14,7 +14,7 @@
 #define CLI_STRBUF_SIZE    64
 
 // Maximum number of arguments in a command (including command).
-#define CLI_MAX_ARGC    5
+#define CLI_MAX_ARGC    2
 
 // Table of commands: {"command_word" , function_name }
 // Command words MUST be in alphabetical (ascii) order!! (A-Z then a-z) if using binary search
@@ -24,9 +24,9 @@
                     {"reset" , cmd_reset  }
 
 // Custom command function prototypes:
-int cmd_boot(uint16_t argc, char *argv[]);
-int cmd_id(uint16_t argc, char *argv[]);
-int cmd_ihex(uint16_t argc, char *argv[]);
-int cmd_reset(uint16_t argc, char *argv[]);
+int cmd_boot(uint8_t argc, char *argv[]);
+int cmd_id(uint8_t argc, char *argv[]);
+int cmd_ihex(uint8_t argc, char *argv[]);
+int cmd_reset(uint8_t argc, char *argv[]);
 
 #endif

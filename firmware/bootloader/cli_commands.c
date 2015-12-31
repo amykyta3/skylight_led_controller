@@ -39,19 +39,19 @@ void cli_print_notfound(char *strcmd){
 //==================================================================================================
 void start_app(void);
 
-int cmd_boot(uint16_t argc, char *argv[]){
+int cmd_boot(uint8_t argc, char *argv[]){
     start_app();
     return(1); // if got here, boot failed
 }
 
 //--------------------------------------------------------------------------------------------------
-int cmd_id(uint16_t argc, char *argv[]){
+int cmd_id(uint8_t argc, char *argv[]){
     cli_puts("BL");
     return(0);
 }
 
 //--------------------------------------------------------------------------------------------------
-int cmd_reset(uint16_t argc, char *argv[]){
+int cmd_reset(uint8_t argc, char *argv[]){
     // Disable Interrupt
     cli();
     
