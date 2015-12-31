@@ -20,11 +20,13 @@
 // Command words MUST be in alphabetical (ascii) order!! (A-Z then a-z) if using binary search
 #define CMDTABLE    {"boot"  , cmd_boot   },\
                     {"id"    , cmd_id     },\
+                    {"ihex"  , cmd_ihex   },\
                     {"reset" , cmd_reset  }
 
 // Custom command function prototypes:
 int cmd_boot(uint16_t argc, char *argv[]);
 int cmd_id(uint16_t argc, char *argv[]);
+int cmd_ihex(uint16_t argc, char *argv[]);
 int cmd_reset(uint16_t argc, char *argv[]);
 
 #endif

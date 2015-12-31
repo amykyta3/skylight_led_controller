@@ -1,9 +1,14 @@
+#include <stdint.h>
+#include <stdbool.h>
+#include <string.h>
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
 #include <cli_commands.h>
 #include <uart_io.h>
+#include <self_program.h>
+#include <intel_hex.h>
 
 //==================================================================================================
 // Device-specific output functions
@@ -52,5 +57,55 @@ int cmd_reset(uint16_t argc, char *argv[]){
     
     // Reset
     PROTECTED_WRITE(RST.CTRL, RST_SWRST_bm);
+    return(0);
+}
+
+//--------------------------------------------------------------------------------------------------
+int cmd_ihex(uint8_t argc, char *argv[]){
+    struct ihex_packet pkt;
+    uint8_t record_type;
+    static uint8_t first_page_buffer[APP_SECTION_PAGE_SIZE];
+    static bool first_page_dirty = false;
+    
+    if(argc != 2){
+        return(1);
+    }
+    
+    record_type = parse_intel_hex(argv[1], &pkt);
+    if(record_type == IHEX_ERROR){
+        return(1);
+    }else if(record_type == IHEX_DATA){
+        if(pkt.addr == 0){
+            // About to write to first page. Clear the page buffer
+            memset(first_page_buffer, 0xFF, sizeof(first_page_buffer));
+            
+            // Erase the first flash page. If something goes wrong while programming, an invalid
+            // app won't be able to boot accidentally.
+            sp_erase_page(0);
+        }
+        
+        if(pkt.addr < APP_SECTION_PAGE_SIZE){
+            // writing to first page. Divert to the page buffer.
+            // This page will be written to flash last once everything else went OK.
+            memcpy(&first_page_buffer[pkt.addr], pkt.data, pkt.len);
+            first_page_dirty = true;
+        }else{
+            // not the first page. Write directly to flash
+            sp_write(pkt.data, pkt.len, pkt.addr);
+        }
+        
+    }else if(record_type == IHEX_EOF){
+        // Got EOF hex record. Flush remaining flash into memory
+        
+        if(first_page_dirty){
+            // Commit first page
+            sp_write(first_page_buffer, sizeof(first_page_buffer), 0);
+            first_page_dirty = false;
+        }
+        sp_flush();
+        
+    }else{
+        // No action necessary for other records
+    }
     return(0);
 }

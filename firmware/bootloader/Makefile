@@ -14,7 +14,7 @@ BOOTSTART:=0x20000
 
 MCU:=atxmega128d4
 INCLUDES:= $(COMMON_SRC_PATH) $(MODULES_SRC_PATH) config
-CFLAGS:= -Os -Wall -std=c99 -ffunction-sections -fdata-sections
+CFLAGS:= -Os -Wall -std=gnu99 -ffunction-sections -fdata-sections
 LDFLAGS:= -Wl,--gc-sections,--section-start=.text=$(BOOTSTART) -Wl,-Map,$(BUILD_PATH)$(PROJECT_NAME).map
 EXECUTABLE:= $(PROJECT_NAME).elf
 
@@ -23,6 +23,8 @@ SRC+= cli_commands.c
 SRC+= $(MODULES_SRC_PATH)/fifo.c
 SRC+= $(MODULES_SRC_PATH)/uart_io.c
 SRC+= $(MODULES_SRC_PATH)/cli.c
+SRC+= $(MODULES_SRC_PATH)/intel_hex.c
+SRC+= $(MODULES_SRC_PATH)/self_program.c
 
 COMMON_SRC:= init0.c
 
