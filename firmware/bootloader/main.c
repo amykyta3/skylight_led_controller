@@ -6,10 +6,21 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
+#include <avr/fuse.h>
 
 #include <cli.h>
 #include <uart_io.h>
 #include <board.h>
+
+//--------------------------------------------------------------------------------------------------
+FUSES = {
+	0xFF,	// Fuse 0: (Reserved)
+	0x00,	// Fuse 1: Watchdog cfg. Not using
+	0xBF,	// Fuse 2: BOOTRST
+	0xFF,	// Fuse 3 (Reserved)
+	0xF2,	// Fuse 4: Max startup time
+	0xFF	// Fuse 5: 
+};
 
 //--------------------------------------------------------------------------------------------------
 void start_app(void);
@@ -17,6 +28,11 @@ static void init_clk(void);
 
 //--------------------------------------------------------------------------------------------------
 int main(void){
+    
+    // Block for now while experiment with Bluetooth via bypass jumper
+    while(1){
+        PORTA.OUTTGL = P_LED_bm; // shitty heartbeat
+    }
     
     if((RST.STATUS != RST_SRF_bm) && ((PORTC.IN & P_BUTTON_bm) == 0)){
         // No bootloader requested.

@@ -31,6 +31,15 @@ COMMON_SRC+= atxmega_modules/src/self_program.c
 
 all:$(EXECUTABLE)
 
+dump_fuse:
+	avrdude -q -q -p x128d4 -c avrispmkII -U fuse1:r:fuse1.hex:i
+	avrdude -q -q -p x128d4 -c avrispmkII -U fuse2:r:fuse2.hex:i
+	avrdude -q -q -p x128d4 -c avrispmkII -U fuse4:r:fuse4.hex:i
+	avrdude -q -q -p x128d4 -c avrispmkII -U fuse5:r:fuse5.hex:i
+	
+program:$(EXECUTABLE)
+	@avrdude -q -q -p x128d4 -c avrispmkII -U fuse1:w:$<:e -U fuse2:w:$<:e -U fuse4:w:$<:e -U fuse5:w:$<:e -U boot:w:$<:e
+
 ########################################### AVR Compile ############################################
 
 COMMON_BUILD_PATH:= $(BUILD_PATH)common/
