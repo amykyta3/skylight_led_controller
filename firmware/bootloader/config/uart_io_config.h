@@ -18,7 +18,7 @@
 #define BAUD_RATE       115200L
 
 // CPU Clock in Hz
-#define F_CPU           2000000L
+#define F_CPU           32000000UL
 
 // Buffer sizes. Max is 256 for DMA mode
 #define RX_BUF_SIZE     64

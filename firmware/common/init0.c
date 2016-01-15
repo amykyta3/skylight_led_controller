@@ -20,7 +20,7 @@ void __init0(void){
     // Port A
     PORTA.PIN2CTRL = PORT_INVEN_bm; // Invert LED pin
     PORTA.DIR = P_LED_bm | P_BT_AUTO_DSC_MODE_bm | P_BT_FACTORY_RST | P_BT_RTS_bm;
-    PORTA.OUT = P_BT_RTS_bm;
+    PORTA.OUT = 0x00;
     PORTA.INTCTRL = 0x00;
     PORTA.INT0MASK = 0x00;
     PORTA.INT1MASK = 0x00;

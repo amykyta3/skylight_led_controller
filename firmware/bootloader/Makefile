@@ -21,6 +21,7 @@ SRC:= main.c
 SRC+= cli_commands.c
 
 COMMON_SRC:= init0.c
+COMMON_SRC+= bt_rn42.c
 COMMON_SRC+= atxmega_modules/src/fifo.c
 COMMON_SRC+= atxmega_modules/src/uart_io.c
 COMMON_SRC+= atxmega_modules/src/cli.c
@@ -37,8 +38,19 @@ dump_fuse:
 	avrdude -q -q -p x128d4 -c avrispmkII -U fuse4:r:fuse4.hex:i
 	avrdude -q -q -p x128d4 -c avrispmkII -U fuse5:r:fuse5.hex:i
 	
+dump_flash:
+	avrdude -p x128d4 -c avrispmkII -U flash:r:flash.hex:i
+	avrdude -p x128d4 -c avrispmkII -U boot:r:boot.hex:i
+	
 program:$(EXECUTABLE)
-	@avrdude -q -q -p x128d4 -c avrispmkII -U fuse1:w:$<:e -U fuse2:w:$<:e -U fuse4:w:$<:e -U fuse5:w:$<:e -U boot:w:$<:e
+	@avrdude -q -q -p x128d4 -c avrispmkII -e
+	@avrdude -q -q -p x128d4 -c avrispmkII -U boot:w:$<:e
+
+erase:
+	@avrdude -q -q -p x128d4 -c avrispmkII -e
+	
+fuse:$(EXECUTABLE)
+	@avrdude -q -q -p x128d4 -c avrispmkII -U fuse1:w:$<:e -U fuse2:w:$<:e -U fuse4:w:$<:e -U fuse5:w:$<:e
 
 ########################################### AVR Compile ############################################
 
@@ -59,16 +71,16 @@ $(COMMON_BUILD_PATH)%.d: $(COMMON_SRC_PATH)%.c
 # C Compile
 $(BUILD_PATH)%.o: %.c
 	@mkdir -p $(dir $@)
-	@$(CC) -mmcu=$(MCU) $(addprefix -I,$(INCLUDES)) $(CFLAGS) -c -o $@ $<
+	$(CC) -mmcu=$(MCU) $(addprefix -I,$(INCLUDES)) $(CFLAGS) -c -o $@ $<
 	
 $(COMMON_BUILD_PATH)%.o: $(COMMON_SRC_PATH)%.c
 	@mkdir -p $(dir $@)
-	@$(CC) -mmcu=$(MCU) $(addprefix -I,$(INCLUDES)) $(CFLAGS) -c -o $@ $<
+	$(CC) -mmcu=$(MCU) $(addprefix -I,$(INCLUDES)) $(CFLAGS) -c -o $@ $<
     
 # Link
 $(EXECUTABLE): $(OBJECTS)
 	@mkdir -p $(dir $@)
-	@$(CC) -mmcu=$(MCU) -o $@ $^ $(LDFLAGS)
+	$(CC) -mmcu=$(MCU) -o $@ $^ $(LDFLAGS)
 
 ifneq ($(MAKECMDGOALS), clean)
   -include $(DEPEND)

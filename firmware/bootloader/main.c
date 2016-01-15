@@ -10,7 +10,11 @@
 
 #include <cli.h>
 #include <uart_io.h>
+#include <bt_rn42.h>
 #include <board.h>
+
+#define F_CPU 32000000UL
+#include <util/delay.h>
 
 //--------------------------------------------------------------------------------------------------
 FUSES = {
@@ -28,13 +32,9 @@ static void init_clk(void);
 
 //--------------------------------------------------------------------------------------------------
 int main(void){
-    
-    // Block for now while experiment with Bluetooth via bypass jumper
-    while(1){
-        PORTA.OUTTGL = P_LED_bm; // shitty heartbeat
-    }
-    
+    // Stay in bootloader if software reset, OR pushbutton is being held.
     if((RST.STATUS != RST_SRF_bm) && ((PORTC.IN & P_BUTTON_bm) == 0)){
+        // Reset was not requested by software AND pushbutton is not pressed
         // No bootloader requested.
         // Try to boot app
         start_app();
@@ -54,11 +54,27 @@ int main(void){
     PMIC.CTRL = PMIC_HILVLEN_bm;
     sei();
     
-    // If this was a hard reset
+    // Initialize Bluetooth
+    _delay_ms(250);
     if(RST.STATUS != RST_SRF_bm){
+        // This was a hard reset
         // Bluetooth isn't guaranteed to be initialized
-        //++ Reset & Init Bluetooth in discoverable mode
+        _delay_ms(1000);
+        bt_enter_cmd_mode();
+        bt_S_cmd("SA,2\r");             // "Just Works" auth mode
+        bt_S_cmd("SP,1234\r");          // Set pin in case some devices fall back to pin authentication.
+        bt_S_cmd("S-,SkylightLED\r");   // Results in name SkylightLED-XXXX where XXXX is last 2-bytes of MAC
+        bt_S_cmd("ST,253\r");           // Always configrable. Local config only
+        bt_reboot();                    // Reboot for changes to take effect
+        _delay_ms(250);
+    }else{
+        // Assume BT is configured. Set discoverable
+        bt_enter_cmd_mode();
+        bt_S_cmd("Q,0\r"); // discoverable and able to connect
+        bt_exit_cmd_mode();
     }
+    PORTA.OUTSET = P_LED_bm;
+    
     
     while(1){
         char c;
@@ -108,12 +124,11 @@ static void init_clk(void){
     DFLLRC32M.CTRL = DFLL_ENABLE_bm;
     
     // Select 32M Osc as sys clk
-    CLK.CTRL = CLK_SCLKSEL_RC32K_gc;
+    PROTECTED_WRITE(CLK.CTRL, CLK_SCLKSEL_RC32M_gc);
     
     // Disable any prescaling
-    CLK.PSCTRL = 0x00;
+    PROTECTED_WRITE(CLK.PSCTRL, 0x00);
     
     // Disable unused oscillators
     OSC.CTRL &= ~(OSC_PLLEN_bm | OSC_RC32KEN_bm | OSC_RC2MEN_bm);
 }
-//--------------------------------------------------------------------------------------------------

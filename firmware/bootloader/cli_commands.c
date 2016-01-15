@@ -9,6 +9,7 @@
 #include <uart_io.h>
 #include <self_program.h>
 #include <intel_hex.h>
+#include <board.h>
 
 //==================================================================================================
 // Device-specific output functions
@@ -47,6 +48,22 @@ int cmd_boot(uint8_t argc, char *argv[]){
 //--------------------------------------------------------------------------------------------------
 int cmd_id(uint8_t argc, char *argv[]){
     cli_puts("BL");
+    return(0);
+}
+
+//--------------------------------------------------------------------------------------------------
+int cmd_led(uint8_t argc, char *argv[]){
+    if(argc != 2){
+        return(1);
+    }
+    
+    if(argv[1][0] == '1'){
+        PORTA.OUTSET = P_LED_bm;
+    }else if(argv[1][0] == '0'){
+        PORTA.OUTCLR = P_LED_bm;
+    }else{
+        return(1);
+    }
     return(0);
 }
 
