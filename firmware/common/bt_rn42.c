@@ -9,7 +9,7 @@
 #include <uart_io.h>
 #include "bt_rn42.h"
 
-#define TIMEOUT_MS 50
+#define TIMEOUT_MS 500
 
 //--------------------------------------------------------------------------------------------------
 /**
@@ -30,7 +30,7 @@ static uint8_t raw_cmd(const char *cmd, char *resp, uint8_t resp_size){
     uart_puts(cmd);
     
     while(1){
-        uint8_t timeout;
+        uint16_t timeout;
         char c;
         
         // Get next char
@@ -44,9 +44,9 @@ static uint8_t raw_cmd(const char *cmd, char *resp, uint8_t resp_size){
         }
         c = uart_getc();
         
-        if(c == '\n'){
+        if(c == '\r'){
             // discard
-        }else if(c == '\r'){
+        }else if(c == '\n'){
             // End of response. Terminate
             *resp = 0;
             return(0);
@@ -66,8 +66,20 @@ static uint8_t raw_cmd(const char *cmd, char *resp, uint8_t resp_size){
 //--------------------------------------------------------------------------------------------------
 uint8_t bt_enter_cmd_mode(void){
     char resp[4];
-    if(raw_cmd("$$$", resp, sizeof(resp))) return(1);
-    if(strcmp(resp, "CMD")) return(1);
+    uint8_t ret;
+    
+    ret = raw_cmd("$$$", resp, sizeof(resp));
+    if(ret == 0){
+        // Got response. Verify
+        if(strcmp(resp, "CMD")) return(1);
+    }else{
+        // No response... might already be in command mode
+        // try sending additional \r to try to flush it out
+        // This definitely shouldnt time out
+        if(raw_cmd("\r", resp, sizeof(resp))) return(1);
+        if(strcmp(resp, "?")) return(1);
+    }
+    
     return(0);
 }
 
@@ -78,9 +90,11 @@ void bt_exit_cmd_mode(void){
 }
 
 //--------------------------------------------------------------------------------------------------
-void bt_reboot(void){
-    char resp[7];
-    raw_cmd("R,1\r", resp, sizeof(resp));
+uint8_t bt_reboot(void){
+    char resp[8];
+    if(raw_cmd("R,1\r", resp, sizeof(resp))) return(1);
+    if(strcmp(resp, "Reboot!")) return(1);
+    return(0);
 }
 
 //--------------------------------------------------------------------------------------------------

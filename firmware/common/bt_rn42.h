@@ -22,7 +22,7 @@ void bt_exit_cmd_mode(void);
 /**
  * \brief Send soft-reset command to RN42
 **/
-void bt_reboot(void);
+uint8_t bt_reboot(void);
 
 //--------------------------------------------------------------------------------------------------
 /**

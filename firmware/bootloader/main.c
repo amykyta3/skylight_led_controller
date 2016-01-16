@@ -31,9 +31,34 @@ void start_app(void);
 static void init_clk(void);
 
 //--------------------------------------------------------------------------------------------------
+void blink_n(int n){
+    int count = n;
+    while(count){
+        PORTA.OUTSET = P_LED_bm;
+        _delay_ms(250);
+        PORTA.OUTCLR = P_LED_bm;
+        _delay_ms(250);
+        count--;
+    }
+}
+//--------------------------------------------------------------------------------------------------
+void err(int n){
+    while(1){
+        _delay_ms(2000);
+        blink_n(n);
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
 int main(void){
+    uint8_t rst_status;
+    
+    // Capture reset status and clear
+    rst_status = RST.STATUS;
+    RST.STATUS = 0xFF;
+    
     // Stay in bootloader if software reset, OR pushbutton is being held.
-    if((RST.STATUS != RST_SRF_bm) && ((PORTC.IN & P_BUTTON_bm) == 0)){
+    if((rst_status != RST_SRF_bm) && ((PORTC.IN & P_BUTTON_bm) == 0)){
         // Reset was not requested by software AND pushbutton is not pressed
         // No bootloader requested.
         // Try to boot app
@@ -48,6 +73,9 @@ int main(void){
     PROTECTED_WRITE(PMIC.CTRL, PMIC.CTRL | PMIC_IVSEL_bm);
     
     init_clk();
+    
+    _delay_ms(250);
+    
     uart_init();
     
     // Enable interrupts
@@ -55,22 +83,23 @@ int main(void){
     sei();
     
     // Initialize Bluetooth
-    _delay_ms(250);
-    if(RST.STATUS != RST_SRF_bm){
+    if(rst_status != RST_SRF_bm){
         // This was a hard reset
         // Bluetooth isn't guaranteed to be initialized
-        _delay_ms(1000);
-        bt_enter_cmd_mode();
-        bt_S_cmd("SA,2\r");             // "Just Works" auth mode
-        bt_S_cmd("SP,1234\r");          // Set pin in case some devices fall back to pin authentication.
-        bt_S_cmd("S-,SkylightLED\r");   // Results in name SkylightLED-XXXX where XXXX is last 2-bytes of MAC
-        bt_S_cmd("ST,253\r");           // Always configrable. Local config only
-        bt_reboot();                    // Reboot for changes to take effect
-        _delay_ms(250);
+        blink_n(2);
+        //_delay_ms(1000);
+        if(bt_enter_cmd_mode()) err(1);
+        if(bt_S_cmd("SA,2\r")) err(2);             // "Just Works" auth mode
+        if(bt_S_cmd("SP,1234\r")) err(3);          // Set pin in case some devices fall back to pin authentication.
+        if(bt_S_cmd("S-,SkylightLED\r")) err(4);   // Results in name SkylightLED-XXXX where XXXX is last 2-bytes of MAC
+        if(bt_S_cmd("ST,253\r")) err(5);           // Always configrable. Local config only
+        if(bt_reboot()) err(6);                    // Reboot for changes to take effect
+        //_delay_ms(250);
     }else{
+        blink_n(1);
         // Assume BT is configured. Set discoverable
-        bt_enter_cmd_mode();
-        bt_S_cmd("Q,0\r"); // discoverable and able to connect
+        if(bt_enter_cmd_mode()) err(7);
+        if(bt_S_cmd("Q,0\r")) err(8); // discoverable and able to connect
         bt_exit_cmd_mode();
     }
     PORTA.OUTSET = P_LED_bm;
@@ -79,6 +108,7 @@ int main(void){
     while(1){
         char c;
         c = uart_getc();
+        PORTA.OUTTGL = P_LED_bm;
         cli_process_char(c);
     }
 }
