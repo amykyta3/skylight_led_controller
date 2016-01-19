@@ -3,11 +3,12 @@
 #include <avr/io.h>
 
 #include <board.h>
+#include "led_pwm.h"
 
 void pwm_init(void){
     // Init TCD0
     TCD0.CTRLC = 0x00; // Turn off RGBW outputs
-    TCD0.CTRLB = TC_WGMODE_SINGLESLOPE_gc | X_CCAEN | X_CCBEN | X_CCCEN | X_CCDEN;
+    TCD0.CTRLB = TC_WGMODE_SINGLESLOPE_gc | TC0_CCAEN_bm | TC0_CCBEN_bm | TC0_CCCEN_bm | TC0_CCDEN_bm;
     TCD0.CTRLD = 0x00;
     TCD0.CTRLE = TC_BYTEM_NORMAL_gc;
     

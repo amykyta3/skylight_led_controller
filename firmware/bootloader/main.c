@@ -16,6 +16,10 @@
 #define F_CPU 32000000UL
 #include <util/delay.h>
 
+
+// REMOVE ME
+#include <uart_io_config.h>
+
 //--------------------------------------------------------------------------------------------------
 FUSES = {
 	0xFF,	// Fuse 0: (Reserved)
@@ -57,6 +61,8 @@ int main(void){
     rst_status = RST.STATUS;
     RST.STATUS = 0xFF;
     
+    init_clk();
+    
     // Stay in bootloader if software reset, OR pushbutton is being held.
     if((rst_status != RST_SRF_bm) && ((PORTC.IN & P_BUTTON_bm) == 0)){
         // Reset was not requested by software AND pushbutton is not pressed
@@ -72,8 +78,6 @@ int main(void){
     // Set PMIC to use the bootloader IVEC table
     PROTECTED_WRITE(PMIC.CTRL, PMIC.CTRL | PMIC_IVSEL_bm);
     
-    init_clk();
-    
     _delay_ms(250);
     
     uart_init();
@@ -87,14 +91,12 @@ int main(void){
         // This was a hard reset
         // Bluetooth isn't guaranteed to be initialized
         blink_n(2);
-        //_delay_ms(1000);
         if(bt_enter_cmd_mode()) err(1);
         if(bt_S_cmd("SA,2\r")) err(2);             // "Just Works" auth mode
         if(bt_S_cmd("SP,1234\r")) err(3);          // Set pin in case some devices fall back to pin authentication.
         if(bt_S_cmd("S-,SkylightLED\r")) err(4);   // Results in name SkylightLED-XXXX where XXXX is last 2-bytes of MAC
         if(bt_S_cmd("ST,253\r")) err(5);           // Always configrable. Local config only
         if(bt_reboot()) err(6);                    // Reboot for changes to take effect
-        //_delay_ms(250);
     }else{
         blink_n(1);
         // Assume BT is configured. Set discoverable
@@ -104,11 +106,12 @@ int main(void){
     }
     PORTA.OUTSET = P_LED_bm;
     
+    cli_echo_off();
+    cli_print_prompt();
     
     while(1){
         char c;
         c = uart_getc();
-        PORTA.OUTTGL = P_LED_bm;
         cli_process_char(c);
     }
 }
