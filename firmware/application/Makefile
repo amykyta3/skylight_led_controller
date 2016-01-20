@@ -16,7 +16,7 @@ EXECUTABLE:= $(PROJECT_NAME).elf
 
 SRC:= main.c
 SRC+= cli_commands.c
-#SRC+= led_pwm.c
+SRC+= led_pwm.c
 
 COMMON_SRC:= bt_rn42.c
 COMMON_SRC+= atxmega_modules/src/fifo.c
@@ -28,7 +28,7 @@ COMMON_SRC+= atxmega_modules/src/cli.c
 all:$(EXECUTABLE).hex
 
 program:$(EXECUTABLE).hex
-	../../software/firmware_loader.py -p /dev/rfcomm0 $< --verbose
+	../../software/firmware_loader.py -p /dev/rfcomm0 $<
 	
 dump_flash:
 	avrdude -p x128d4 -c avrispmkII -U flash:r:flash.hex:i
