@@ -22,6 +22,7 @@ COMMON_SRC:= bt_rn42.c
 COMMON_SRC+= atxmega_modules/src/fifo.c
 COMMON_SRC+= atxmega_modules/src/uart_io.c
 COMMON_SRC+= atxmega_modules/src/cli.c
+COMMON_SRC+= atxmega_modules/src/event_queue.c
 
 ####################################################################################################
 
