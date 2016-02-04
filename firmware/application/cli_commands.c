@@ -10,6 +10,8 @@
 #include <cli_commands.h>
 #include <uart_io.h>
 #include <board.h>
+#include <rtc.h>
+#include <string_ext.h>
 
 #include "led_pwm.h"
 
@@ -116,3 +118,36 @@ int cmd_rgbw(uint8_t argc, char *argv[]){
     return(0);
 }
 
+//--------------------------------------------------------------------------------------------------
+
+int cmd_now(uint8_t argc, char *argv[]){
+    calendar_time_t T;
+    char tmp[6];
+    
+    calendar_get_time(&T);
+    
+    snprint_d16(tmp,sizeof(tmp),T.year);
+    cli_puts(tmp);
+    cli_putc('-');
+    
+    snprint_d8(tmp,sizeof(tmp),T.month);
+    cli_puts(tmp);
+    cli_putc('-');
+    
+    snprint_d8(tmp,sizeof(tmp),T.day);
+    cli_puts(tmp);
+    cli_putc(' ');
+    
+    snprint_d8(tmp,sizeof(tmp),T.hour);
+    cli_puts(tmp);
+    cli_putc(':');
+    
+    snprint_d8(tmp,sizeof(tmp),T.minute);
+    cli_puts(tmp);
+    cli_putc(':');
+    
+    snprint_d8(tmp,sizeof(tmp),T.second);
+    cli_puts(tmp);
+    
+    return(0);
+}

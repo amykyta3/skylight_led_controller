@@ -9,6 +9,7 @@
 #include <cli.h>
 #include <uart_io.h>
 #include <event_queue.h>
+#include <rtc.h>
 
 #include <board.h>
 
@@ -21,9 +22,10 @@ int main(void){
     event_init();
     uart_init();
     pwm_init();
+    rtc_init();
     
     // Enable interrupts
-    PMIC.CTRL = PMIC_HILVLEN_bm;
+    PMIC.CTRL = PMIC_HILVLEN_bm | PMIC_MEDLVLEN_bm | PMIC_LOLVLEN_bm;
     sei();
     
     cli_echo_off();

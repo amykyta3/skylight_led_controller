@@ -21,6 +21,7 @@
 #define CMDTABLE    {"echo"  , cmd_echo     },\
                     {"id"    , cmd_id       },\
                     {"led"   , cmd_led      },\
+                    {"now"   , cmd_now      },\
                     {"reset" , cmd_reset    },\
                     {"rgbw"  , cmd_rgbw     }
 
@@ -28,6 +29,7 @@
 int cmd_echo(uint8_t argc, char *argv[]);
 int cmd_id(uint8_t argc, char *argv[]);
 int cmd_led(uint8_t argc, char *argv[]);
+int cmd_now(uint8_t argc, char *argv[]);
 int cmd_reset(uint8_t argc, char *argv[]);
 int cmd_rgbw(uint8_t argc, char *argv[]);
 
