@@ -14,23 +14,41 @@
 #define CLI_STRBUF_SIZE    64
 
 // Maximum number of arguments in a command (including command).
-#define CLI_MAX_ARGC    8
+#define CLI_MAX_ARGC    10
 
 // Table of commands: {"command_word" , function_name }
 // Command words MUST be in alphabetical (ascii) order!! (A-Z then a-z) if using binary search
-#define CMDTABLE    {"echo"  , cmd_echo     },\
-                    {"id"    , cmd_id       },\
-                    {"led"   , cmd_led      },\
-                    {"now"   , cmd_now      },\
-                    {"reset" , cmd_reset    },\
-                    {"rgbw"  , cmd_rgbw     }
+#define CMDTABLE    {"echo"     , cmd_echo     },\
+                    {"get_time" , cmd_get_time },\
+                    {"id"       , cmd_id       },\
+                    {"led"      , cmd_led      },\
+                    {"reset"    , cmd_reset    },\
+                    {"rgbw"     , cmd_rgbw     },\
+                    {"set_dst"  , cmd_set_dst  },\
+                    {"set_time" , cmd_set_time }
 
 // Custom command function prototypes:
+
+// echo <0/1>
 int cmd_echo(uint8_t argc, char *argv[]);
+
 int cmd_id(uint8_t argc, char *argv[]);
+
+// led <0/1>
 int cmd_led(uint8_t argc, char *argv[]);
-int cmd_now(uint8_t argc, char *argv[]);
+
 int cmd_reset(uint8_t argc, char *argv[]);
+
+// rgbw <r> <g> <b> <w>
 int cmd_rgbw(uint8_t argc, char *argv[]);
 
+// get_time
+// <DOW> <year> <month> <day> <hour> <minute> <second>
+int cmd_get_time(uint8_t argc, char *argv[]);
+
+// set_time <year> <month> <day> <hour> <minute> <second>
+int cmd_set_time(uint8_t argc, char *argv[]);
+
+// set_dst <observed 0/1> <enabled 0/1>
+int cmd_set_dst(uint8_t argc, char *argv[]);
 #endif
