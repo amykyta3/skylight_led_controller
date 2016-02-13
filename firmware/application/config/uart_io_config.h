@@ -26,12 +26,12 @@
 
 // Buffer sizes. Max is 256 for DMA mode
 #define RX_BUF_SIZE     64
-#define TX_BUF_SIZE     16
+#define TX_BUF_SIZE     32
 
 //==================================================================================================
 // TX Flow Control (Only supported if UART_TX_MODE == 1)
 //==================================================================================================
-#define TX_FLOW_CONTROL_EN  1
+#define TX_FLOW_CONTROL_EN  0
 #define TX_FLOW_PORT        PORTA
 #define TX_FLOW_PIN         5
 

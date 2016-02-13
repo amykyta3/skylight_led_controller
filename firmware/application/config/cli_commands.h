@@ -25,7 +25,8 @@
                     {"reset"    , cmd_reset    },\
                     {"rgbw"     , cmd_rgbw     },\
                     {"set_dst"  , cmd_set_dst  },\
-                    {"set_time" , cmd_set_time }
+                    {"set_time" , cmd_set_time },\
+                    {"xxx", cmd_xxx }
 
 // Custom command function prototypes:
 
@@ -51,4 +52,5 @@ int cmd_set_time(uint8_t argc, char *argv[]);
 
 // set_dst <observed 0/1> <enabled 0/1>
 int cmd_set_dst(uint8_t argc, char *argv[]);
+int cmd_xxx(uint8_t argc, char *argv[]);
 #endif

@@ -14,6 +14,7 @@
 #include <board.h>
 
 #include "led_pwm.h"
+#include "debug.h"
 
 //--------------------------------------------------------------------------------------------------
 int main(void){
@@ -23,6 +24,7 @@ int main(void){
     uart_init();
     pwm_init();
     rtc_init();
+    debug_init();
     
     // Enable interrupts
     PMIC.CTRL = PMIC_HILVLEN_bm | PMIC_MEDLVLEN_bm | PMIC_LOLVLEN_bm;
@@ -36,10 +38,17 @@ int main(void){
 
 //--------------------------------------------------------------------------------------------------
 void onIdle(void){
+    char buf[16];
+    size_t n_bytes;
     
     if(uart_rdcount() > 0){
         char c;
         c = uart_getc();
         cli_process_char(c);
+    }
+    
+    n_bytes = debug_get_chunk(buf, sizeof(buf));
+    if(n_bytes){
+        uart_write(buf, n_bytes);
     }
 }

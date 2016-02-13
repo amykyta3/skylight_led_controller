@@ -16,6 +16,6 @@
 #define RTC_COMPINTLVL      RTC_COMPINTLVL_HI_gc
 
 #define RTC_CALENDAR_ENABLE 1
-#define RTC_TIMER_ENABLE    0
+#define RTC_TIMER_ENABLE    1
 
 #endif

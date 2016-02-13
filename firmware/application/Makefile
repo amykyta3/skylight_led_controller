@@ -17,6 +17,7 @@ EXECUTABLE:= $(PROJECT_NAME).elf
 SRC:= main.c
 SRC+= cli_commands.c
 SRC+= led_pwm.c
+SRC+= debug.c
 
 COMMON_SRC:= bt_rn42.c
 COMMON_SRC+= atxmega_modules/src/fifo.c
