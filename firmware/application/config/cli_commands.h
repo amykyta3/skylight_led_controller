@@ -14,7 +14,7 @@
 #define CLI_STRBUF_SIZE    64
 
 // Maximum number of arguments in a command (including command).
-#define CLI_MAX_ARGC    10
+#define CLI_MAX_ARGC    16
 
 // Table of commands: {"command_word" , function_name }
 // Command words MUST be in alphabetical (ascii) order!! (A-Z then a-z) if using binary search

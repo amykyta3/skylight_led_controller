@@ -108,14 +108,14 @@ int cmd_reset(uint8_t argc, char *argv[]){
 
 //--------------------------------------------------------------------------------------------------
 int cmd_rgbw(uint8_t argc, char *argv[]){
-    uint16_t r, g, b, w;
+    rgbw_t rgbw;
     if(argc != 5) return(1);
     
-    r = xtou16(argv[1]);
-    g = xtou16(argv[2]);
-    b = xtou16(argv[3]);
-    w = xtou16(argv[4]);
-    pwm_set_value(r,g,b,w);
+    rgbw.r = xtou16(argv[1]);
+    rgbw.g = xtou16(argv[2]);
+    rgbw.b = xtou16(argv[3]);
+    rgbw.w = xtou16(argv[4]);
+    pwm_set_value(&rgbw);
     return(0);
 }
 
@@ -180,46 +180,17 @@ int cmd_set_dst(uint8_t argc, char *argv[]){
 }
 
 //--------------------------------------------------------------------------------------------------
-static uint8_t repcount1;
-static timer_t Timer1;
-static void timer_exp1(void *d){
-    repcount1--;
-    debug_val("exp1:", repcount1);
-    if(repcount1 == 0){
-        timer_stop(&Timer1);
-    }
-}
-
-static uint8_t repcount2;
-static timer_t Timer2;
-static void timer_exp2(void *d){
-    repcount2--;
-    debug_val("exp2:", repcount2);
-    if(repcount2 == 0){
-        timer_stop(&Timer2);
-    }
-}
 
 int cmd_xxx(uint8_t argc, char *argv[]){
-    struct timerctl t1;
-    struct timerctl t2;
+    rgbw_t end;
     
-    if(argc != 4) return(1);
+    if(argc != 6) return(1);
     
-    repcount1 = 4;
-    t1.interval = xtou16(argv[1]);
-    t1.repeat = xtou16(argv[3]);
-    t1.callback = timer_exp1;
-    t1.callback_data = NULL;
+    for(uint8_t i=0; i<4; i++){
+        end.arr[i] = xtou16(argv[1+i]);
+    }
     
-    repcount2 = 4;
-    t2.interval = xtou16(argv[2]);
-    t2.repeat = xtou16(argv[3]);
-    t2.callback = timer_exp2;
-    t2.callback_data = NULL;
-    
-    timer_start(&Timer1, &t1);
-    timer_start(&Timer2, &t2);
+    pwm_start_fade(&end, xtou16(argv[5]));
 
     return(0);
 }
