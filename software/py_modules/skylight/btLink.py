@@ -6,7 +6,7 @@ import time
 class CMDError(Exception):
     pass
 
-class Skylight:
+class btLink:
     def __init__(self, port, timeout = 10):
         self.S = serial.Serial()
         self.S.port = port

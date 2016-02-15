@@ -19,7 +19,7 @@ class FirmwareLoader(App):
   def main(self):
     App.main(self)
     
-    with skylight.Skylight(self.options.port) as S:
+    with skylight.btLink(self.options.port) as S:
       S.enter_bootloader()
       S.send_ihex(self.options.filename)
       S.exit_bootloader()
