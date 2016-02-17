@@ -11,7 +11,7 @@
 #define USE_BINARY_SEARCH   0
 
 // maximum length of a command input line
-#define CLI_STRBUF_SIZE    64
+#define CLI_STRBUF_SIZE    96
 
 // Maximum number of arguments in a command (including command).
 #define CLI_MAX_ARGC    16
@@ -19,6 +19,9 @@
 // Table of commands: {"command_word" , function_name }
 // Command words MUST be in alphabetical (ascii) order!! (A-Z then a-z) if using binary search
 #define CMDTABLE    {"echo"     , cmd_echo     },\
+                    {"cfg_erase", cmd_cfg_erase},\
+                    {"cfg_read" , cmd_cfg_read },\
+                    {"cfg_write", cmd_cfg_write},\
                     {"get_time" , cmd_get_time },\
                     {"id"       , cmd_id       },\
                     {"led"      , cmd_led      },\
@@ -26,7 +29,7 @@
                     {"rgbw"     , cmd_rgbw     },\
                     {"set_dst"  , cmd_set_dst  },\
                     {"set_time" , cmd_set_time },\
-                    {"xxx", cmd_xxx }
+                    {"xxx"      , cmd_xxx      }
 
 // Custom command function prototypes:
 
@@ -52,5 +55,10 @@ int cmd_set_time(uint8_t argc, char *argv[]);
 
 // set_dst <observed 0/1> <enabled 0/1>
 int cmd_set_dst(uint8_t argc, char *argv[]);
+
+int cmd_cfg_erase(uint8_t argc, char *argv[]);
+int cmd_cfg_write(uint8_t argc, char *argv[]);
+int cmd_cfg_read(uint8_t argc, char *argv[]);
+
 int cmd_xxx(uint8_t argc, char *argv[]);
 #endif

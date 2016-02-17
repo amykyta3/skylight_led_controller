@@ -17,6 +17,7 @@ EXECUTABLE:= $(PROJECT_NAME).elf
 SRC:= main.c
 SRC+= cli_commands.c
 SRC+= led_pwm.c
+SRC+= eeprom_config.c
 SRC+= debug.c
 
 COMMON_SRC:= bt_rn42.c
@@ -68,7 +69,9 @@ $(COMMON_BUILD_PATH)%.o: $(COMMON_SRC_PATH)%.c
 # Link
 $(EXECUTABLE): $(OBJECTS)
 	@mkdir -p $(dir $@)
-	$(CC) -mmcu=$(MCU) -o $@ $^ $(LDFLAGS)
+	$(CC) -mmcu=$(MCU) -DBUILD_TIMESTAMP=$(shell date '+%s') -c -o $(BUILD_PATH)/timestamp.o timestamp.c
+	
+	$(CC) -mmcu=$(MCU) -o $@ $^ $(BUILD_PATH)/timestamp.o $(LDFLAGS)
 
 # Intel-hex output
 $(EXECUTABLE).hex: $(EXECUTABLE)

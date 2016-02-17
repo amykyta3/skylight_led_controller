@@ -25,7 +25,7 @@
 #define F_CPU           32000000UL
 
 // Buffer sizes. Max is 256 for DMA mode
-#define RX_BUF_SIZE     64
+#define RX_BUF_SIZE     32
 #define TX_BUF_SIZE     32
 
 //==================================================================================================

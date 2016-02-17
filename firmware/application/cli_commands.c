@@ -15,6 +15,7 @@
 
 #include "led_pwm.h"
 #include "debug.h"
+#include "eeprom_config.h"
 
 //==================================================================================================
 static uint16_t xtou16(char *s){
@@ -35,6 +36,18 @@ static uint16_t xtou16(char *s){
         s++;
     }
     return(n);
+}
+
+static uint8_t hex2nibble(char c){
+    if((c >= '0') && (c <= '9')){
+        return(c-'0');
+    }else if((c >= 'A') && (c <= 'F')){
+        return(c-'A'+10);
+    }else if((c >= 'a') && (c <= 'f')){
+        return(c-'a'+10);
+    }else{
+        return(0);
+    }
 }
 
 //==================================================================================================
@@ -176,6 +189,57 @@ int cmd_set_time(uint8_t argc, char *argv[]){
 int cmd_set_dst(uint8_t argc, char *argv[]){
     if(argc != 3) return(1);
     calendar_set_DST(xtou16(argv[1]), xtou16(argv[2]));
+    return(0);
+}
+
+//--------------------------------------------------------------------------------------------------
+int cmd_cfg_erase(uint8_t argc, char *argv[]){
+    eecfg_erase();
+    return(0);
+}
+
+//--------------------------------------------------------------------------------------------------
+int cmd_cfg_write(uint8_t argc, char *argv[]){
+    uint8_t page;
+    uint8_t data[EEPROM_PAGE_SIZE];
+    
+    if(argc != 3) return(1);
+    
+    page = xtou16(argv[1]);
+    if(page >= EEPROM_PAGE_COUNT) return(1);
+    
+    if(strlen(argv[2]) != EEPROM_PAGE_SIZE*2) return(1);
+    for(uint8_t i=0; i<EEPROM_PAGE_SIZE; i++){
+        data[i] = hex2nibble(argv[2][i*2]);
+        data[i] <<= 4;
+        data[i] += hex2nibble(argv[2][i*2+1]);
+    }
+    
+    eecfg_write_page(page, data);
+    
+    return(0);
+}
+
+//--------------------------------------------------------------------------------------------------
+int cmd_cfg_read(uint8_t argc, char *argv[]){
+    uint8_t page;
+    eeptr_t addr;
+    uint8_t *data;
+    
+    if(argc != 2) return(1);
+    
+    page = xtou16(argv[1]);
+    if(page >= EEPROM_PAGE_COUNT) return(1);
+    addr = page * EEPROM_PAGE_SIZE;
+    
+    data = (uint8_t *)MAPPED_EEPROM_START + addr;
+    
+    for(uint8_t i=0; i<EEPROM_PAGE_SIZE; i++){
+        char tmp[3];
+        snprint_x8(tmp,sizeof(tmp),data[i]);
+        cli_puts(tmp);
+    }
+    
     return(0);
 }
 
