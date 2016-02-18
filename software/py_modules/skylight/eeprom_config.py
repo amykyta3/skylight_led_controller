@@ -1,6 +1,8 @@
 
 import struct
 
+MAPPED_EEPROM_START = 0x1000
+
 class cfgObject:
     """
     Base class for any object in the configuration EEPROM
@@ -194,7 +196,7 @@ class trans_Waveform(Transition):
     def to_binary(self):
         b = Transition.to_binary(self)
         
-        # eeptr_t waveform
+        # uintptr_t waveform
         # uint16_t duration
         
         b += struct.pack("<HH", self.waveform.ee_address, self.duration)
@@ -299,8 +301,8 @@ class ModeSet(cfgObject):
         b = struct.pack("<Bx", len(self.modes))
         for mode in self.modes:
             # mode_entry_t
-            #   eeptr_t on_transition
-            #   eeptr_t off_transition
+            #   uintptr_t on_transition
+            #   uintptr_t off_transition
             b += struct.pack("<HH", mode[0].ee_address, mode[1].ee_address)
             
         return(b)
@@ -358,7 +360,7 @@ class AlarmEntry:
         # uint8_t hour
         # uint8_t minute
         # [pack byte]
-        # eeptr_t data
+        # uintptr_t data
         b = struct.pack("<BBBxH", dow_mask, self.hour, self.minute, self.data.ee_address)
         return(b)
         
@@ -460,9 +462,9 @@ class eeConfig:
     def to_binary(self, dummy = False):
         
         # uint32_t timestamp
-        # eeptr_t default_modeset
-        # eeptr_t lighting_alarm_table
-        # eeptr_t modeset_change_table
+        # uintptr_t default_modeset
+        # uintptr_t lighting_alarm_table
+        # uintptr_t modeset_change_table
         # [pack byte 2x]
         if(dummy):
             b = struct.pack("<IHHHxx", 0, 0, 0, 0)
@@ -492,9 +494,12 @@ def compile(cfg):
     if(type(cfg) != eeConfig):
         raise TypeError("cfg must be an instance of eeConfig")
     
+    # Initialize EEPROM address
+    ee_address = MAPPED_EEPROM_START
+    
     # Create dummy header for now
     image = cfg.to_binary(dummy=True)
-    ee_address = len(image)
+    ee_address += len(image)
     
     # Collect a list of all cfgObject instances in the entire configuration
     uncompiled = cfg.get_all_objects()
