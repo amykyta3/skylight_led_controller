@@ -30,6 +30,8 @@ void eecfg_init(void){
 
 //------------------------------------------------------------------------------
 void eecfg_erase(void){
+    memset((void*)MAPPED_EEPROM_START,0xFF, EEPROM_PAGE_SIZE);
+    
     NVM.CMD = NVM_CMD_ERASE_EEPROM_gc;
     NVM_EXEC();
     while(NVM.STATUS & NVM_NVMBUSY_bm);
