@@ -3,11 +3,84 @@
 
 #include <stdint.h>
 #include <avr/io.h>
+#include "led_pwm.h"
 
 #define EEPROM_PAGE_COUNT (EEPROM_SIZE/EEPROM_PAGE_SIZE)
 
-typedef uint16_t eeptr_t;
+//==============================================================================
+// Configuration Objects
+//==============================================================================
 
+// Tranition Types
+#define TRANS_IMMEDIATE 0
+#define TRANS_FADE      1
+#define TRANS_WAVEFORM  2
+
+typedef struct {
+    uint8_t n;
+    rgbw_t colors[0];
+} color_list_t;
+
+typedef struct {
+    uint8_t type;
+    uint16_t delay;
+    union {
+        struct {
+            rgbw_t color;
+        } immediate;
+        
+        struct {
+            rgbw_t color;
+            uint16_t duration;
+        } fade;
+        
+        struct {
+            color_list_t *waveform;
+            uint16_t duration;
+        } waveform;
+    };
+} transition_t;
+
+typedef struct {
+    uint8_t n;
+    struct {
+        transition_t *on;
+        transition_t *off;
+    } modes[0];
+} modeset_t;
+
+typedef struct {
+    uint8_t n;
+    struct {
+        uint8_t dayofweek_mask;
+        uint8_t hour;
+        uint8_t minute;
+        transition_t *transition;
+    } alarms[0];
+} lighting_alarm_table_t;
+
+typedef struct {
+    uint8_t n;
+    struct {
+        uint8_t dayofweek_mask;
+        uint8_t hour;
+        uint8_t minute;
+        modeset_t *modeset;
+    } alarms[0];
+} modeset_change_table_t;
+
+typedef struct {
+    uint32_t timestamp;
+    modeset_t *default_modeset;
+    lighting_alarm_table_t *lighting_alarm_table;
+    modeset_change_table_t *modeset_change_table;
+} ee_config_t;
+
+#define eeConfig (*(ee_config_t *) MAPPED_EEPROM_START)
+
+//==============================================================================
+// Functions
+//==============================================================================
 
 void eecfg_init(void);
 

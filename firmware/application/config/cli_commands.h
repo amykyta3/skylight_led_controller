@@ -18,13 +18,12 @@
 
 // Table of commands: {"command_word" , function_name }
 // Command words MUST be in alphabetical (ascii) order!! (A-Z then a-z) if using binary search
-#define CMDTABLE    {"echo"     , cmd_echo     },\
-                    {"cfg_erase", cmd_cfg_erase},\
+#define CMDTABLE    {"cfg_erase", cmd_cfg_erase},\
                     {"cfg_read" , cmd_cfg_read },\
                     {"cfg_write", cmd_cfg_write},\
+                    {"echo"     , cmd_echo     },\
                     {"get_time" , cmd_get_time },\
                     {"id"       , cmd_id       },\
-                    {"led"      , cmd_led      },\
                     {"reset"    , cmd_reset    },\
                     {"rgbw"     , cmd_rgbw     },\
                     {"set_dst"  , cmd_set_dst  },\
@@ -37,9 +36,6 @@
 int cmd_echo(uint8_t argc, char *argv[]);
 
 int cmd_id(uint8_t argc, char *argv[]);
-
-// led <0/1>
-int cmd_led(uint8_t argc, char *argv[]);
 
 int cmd_reset(uint8_t argc, char *argv[]);
 

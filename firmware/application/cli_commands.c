@@ -83,20 +83,6 @@ int cmd_id(uint8_t argc, char *argv[]){
 }
 
 //--------------------------------------------------------------------------------------------------
-int cmd_led(uint8_t argc, char *argv[]){
-    if(argc != 2) return(1);
-    
-    if(argv[1][0] == '1'){
-        PORTA.OUTSET = P_LED_bm;
-    }else if(argv[1][0] == '0'){
-        PORTA.OUTCLR = P_LED_bm;
-    }else{
-        return(1);
-    }
-    return(0);
-}
-
-//--------------------------------------------------------------------------------------------------
 int cmd_echo(uint8_t argc, char *argv[]){
     if(argc != 2) return(1);
     
@@ -222,17 +208,18 @@ int cmd_cfg_write(uint8_t argc, char *argv[]){
 
 //--------------------------------------------------------------------------------------------------
 int cmd_cfg_read(uint8_t argc, char *argv[]){
+    uint16_t address;
     uint8_t page;
-    eeptr_t addr;
     uint8_t *data;
     
     if(argc != 2) return(1);
     
     page = xtou16(argv[1]);
     if(page >= EEPROM_PAGE_COUNT) return(1);
-    addr = page * EEPROM_PAGE_SIZE;
-    
-    data = (uint8_t *)MAPPED_EEPROM_START + addr;
+    address = page;
+    address *= EEPROM_PAGE_SIZE;
+    address += MAPPED_EEPROM_START;
+    data = (uint8_t*) address;
     
     for(uint8_t i=0; i<EEPROM_PAGE_SIZE; i++){
         char tmp[3];
