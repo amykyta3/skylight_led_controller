@@ -11,6 +11,10 @@
 
 #define RTC_PRESCALER       16
     // 1, 2, 8, 16, 64, 256, 1024
+    
+// Results in:
+//  15.625 ms/tick
+//  1-sec = 64 ticks
 
 #define RTC_OVFINTLVL       RTC_OVFINTLVL_HI_gc
 #define RTC_COMPINTLVL      RTC_COMPINTLVL_HI_gc

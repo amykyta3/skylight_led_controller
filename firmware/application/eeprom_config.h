@@ -3,12 +3,14 @@
 
 #include <stdint.h>
 #include <avr/io.h>
+
+#include <rtc.h>
 #include "led_pwm.h"
 
 #define EEPROM_PAGE_COUNT (EEPROM_SIZE/EEPROM_PAGE_SIZE)
 
 //==============================================================================
-// Configuration Objects
+// EEPROM Configuration Objects
 //==============================================================================
 
 // Tranition Types
@@ -79,10 +81,33 @@ typedef struct {
 #define eeConfig (*(ee_config_t *) MAPPED_EEPROM_START)
 
 //==============================================================================
+// Loaded Configuration
+//==============================================================================
+typedef struct {
+    modeset_t *current_modeset;
+    uint16_t n_alarms;
+    calendar_alarm_t *alarms;
+} Cfg_t;
+extern Cfg_t Cfg;
+
+//==============================================================================
 // Functions
 //==============================================================================
 
+/**
+ * \brief Initialize EEPROM & load configuration
+ **/
 void eecfg_init(void);
+
+/**
+ * \brief Uninitialize previous configuration and reload new.
+ **/
+void eecfg_reload_cfg(void);
+
+/**
+ * \brief Uninitialize configuration
+ **/
+void eecfg_unload_cfg(void);
 
 /**
  * Erases entire EEPROM

@@ -180,6 +180,7 @@ int cmd_set_dst(uint8_t argc, char *argv[]){
 
 //--------------------------------------------------------------------------------------------------
 int cmd_cfg_erase(uint8_t argc, char *argv[]){
+    eecfg_unload_cfg();
     eecfg_erase();
     return(0);
 }
@@ -203,6 +204,12 @@ int cmd_cfg_write(uint8_t argc, char *argv[]){
     
     eecfg_write_page(page, data);
     
+    return(0);
+}
+
+//--------------------------------------------------------------------------------------------------
+int cmd_cfg_reload(uint8_t argc, char *argv[]){
+    eecfg_reload_cfg();
     return(0);
 }
 

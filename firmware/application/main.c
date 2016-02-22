@@ -16,6 +16,7 @@
 #include "led_pwm.h"
 #include "debug.h"
 #include "eeprom_config.h"
+#include "light_switch.h"
 
 //--------------------------------------------------------------------------------------------------
 int main(void){
@@ -27,6 +28,7 @@ int main(void){
     rtc_init();
     debug_init();
     eecfg_init();
+    light_switch_init();
     
     // Enable interrupts
     PMIC.CTRL = PMIC_HILVLEN_bm | PMIC_MEDLVLEN_bm | PMIC_LOLVLEN_bm;
