@@ -7,6 +7,7 @@
 #include <rtc.h>
 
 #include "timestamp.h"
+#include "led_transitions.h"
 #include "eeprom_config.h"
 
 #define NVM_EXEC()	asm("push r30"      "\n\t"	\
@@ -25,14 +26,27 @@
                         "pop r30"       "\n\t"	\
                         )
 
-//==================================================================================================
+//==============================================================================
 // Shared variables
-//==================================================================================================
+//==============================================================================
 Cfg_t Cfg;
 
-//==================================================================================================
+//==============================================================================
+// Internal
+//==============================================================================
+void cb_lighting_alarm(void *data){
+    // Alarm fired to do a lighting event
+    transition_start(data);
+}
+
+void cb_modeset_change(void *data){
+    // Alarm fired to switch modesets
+    Cfg.current_modeset = data;
+}
+
+//==============================================================================
 // Functions
-//==================================================================================================
+//==============================================================================
 void eecfg_init(void){
     
     // Enable memory-mapped EEPROM
@@ -46,11 +60,11 @@ void eecfg_init(void){
     eecfg_reload_cfg();
 }
 
-//--------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 void eecfg_unload_cfg(void){
     
-    #warning "TODO: Abort any transitions in progress"
-    //++ 
+    // Abort any transitions in progress
+    transition_abort();
     
     Cfg.current_modeset = NULL;
     
@@ -63,7 +77,7 @@ void eecfg_unload_cfg(void){
     Cfg.n_alarms = 0;
 }
 
-//--------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 void eecfg_reload_cfg(void){
     
     eecfg_unload_cfg();
@@ -84,8 +98,7 @@ void eecfg_reload_cfg(void){
             Cfg.alarms[a_idx].dayofweek_mask = eeConfig.lighting_alarm_table->alarms[i].dayofweek_mask;
             Cfg.alarms[a_idx].hour = eeConfig.lighting_alarm_table->alarms[i].hour;
             Cfg.alarms[a_idx].minute = eeConfig.lighting_alarm_table->alarms[i].minute;
-            #warning "TODO: Point to a real callback"
-            Cfg.alarms[a_idx].callback = NULL; // TODO: Point to a real callback
+            Cfg.alarms[a_idx].callback = cb_lighting_alarm;
             Cfg.alarms[a_idx].callback_data = eeConfig.lighting_alarm_table->alarms[i].transition;
             calendar_add_alarm(&Cfg.alarms[a_idx]);
         }
@@ -95,16 +108,14 @@ void eecfg_reload_cfg(void){
             Cfg.alarms[a_idx].dayofweek_mask = eeConfig.modeset_change_table->alarms[i].dayofweek_mask;
             Cfg.alarms[a_idx].hour = eeConfig.modeset_change_table->alarms[i].hour;
             Cfg.alarms[a_idx].minute = eeConfig.modeset_change_table->alarms[i].minute;
-            #warning "TODO: Point to a real callback"
-            Cfg.alarms[a_idx].callback = NULL; // TODO: Point to a real callback
+            Cfg.alarms[a_idx].callback = cb_modeset_change;
             Cfg.alarms[a_idx].callback_data = eeConfig.modeset_change_table->alarms[i].modeset;
             calendar_add_alarm(&Cfg.alarms[a_idx]);
         }
-        
     }
 }
 
-//--------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 void eecfg_erase(void){
     memset((void*)MAPPED_EEPROM_START,0xFF, EEPROM_PAGE_SIZE);
     
@@ -113,7 +124,7 @@ void eecfg_erase(void){
     while(NVM.STATUS & NVM_NVMBUSY_bm);
 }
 
-//--------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 void eecfg_write_page(uint8_t page, void *data){
     uint16_t address;
     

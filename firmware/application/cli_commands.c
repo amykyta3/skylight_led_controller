@@ -240,15 +240,5 @@ int cmd_cfg_read(uint8_t argc, char *argv[]){
 //--------------------------------------------------------------------------------------------------
 
 int cmd_xxx(uint8_t argc, char *argv[]){
-    rgbw_t end;
-    
-    if(argc != 6) return(1);
-    
-    for(uint8_t i=0; i<4; i++){
-        end.arr[i] = xtou16(argv[1+i]);
-    }
-    
-    pwm_start_fade(&end, xtou16(argv[5]));
-
     return(0);
 }

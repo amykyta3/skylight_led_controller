@@ -9,6 +9,7 @@
 #include <board.h>
 #include "eeprom_config.h"
 #include "led_pwm.h"
+#include "led_transitions.h"
 #include "debug.h"
 
 
@@ -122,16 +123,13 @@ static void ev_switch_on(){
     
     if(Cfg.current_modeset){
         mode = mode % Cfg.current_modeset->n;
-        
-        #warning "TODO: Trigger the appropriate transition"
-        //++ Cfg.current_modeset->modes[mode].on
-        
+        transition_start(Cfg.current_modeset->modes[mode].on);
     }else{
         // no configuration loaded. Do something sane
         rgbw_t rgbw;
         
-        #warning "TODO: Abort any transitions in progress"
-        //++ 
+        // Abort any transitions in progress
+        transition_abort();
         
         rgbw.r = 0;
         rgbw.g = 0;
@@ -148,17 +146,14 @@ static void ev_switch_off(){
     
     if(Cfg.current_modeset){
         mode = mode % Cfg.current_modeset->n;
-        
-        #warning "TODO: Trigger the appropriate transition"
-        //++ Cfg.current_modeset->modes[mode].off
-        
+        transition_start(Cfg.current_modeset->modes[mode].off);
     }else{
         // no configuration loaded. Do something sane
-        
-        #warning "TODO: Abort any transitions in progress"
-        //++ 
-        
         rgbw_t rgbw;
+        
+        // Abort any transitions in progress
+        transition_abort();
+        
         rgbw.r = 0;
         rgbw.g = 0;
         rgbw.b = 0;

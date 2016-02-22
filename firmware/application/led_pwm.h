@@ -20,7 +20,4 @@ void pwm_uninit(void);
 void pwm_set_value(rgbw_t *rgbw);
 void pwm_get_value(rgbw_t *rgbw);
 
-void pwm_start_fade(rgbw_t *end, uint16_t duration_ticks);
-void pwm_abort_fade();
-
 #endif

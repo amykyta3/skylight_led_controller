@@ -20,6 +20,7 @@ SRC+= led_pwm.c
 SRC+= eeprom_config.c
 SRC+= debug.c
 SRC+= light_switch.c
+SRC+= led_transitions.c
 
 COMMON_SRC:= bt_rn42.c
 COMMON_SRC+= atxmega_modules/src/fifo.c
