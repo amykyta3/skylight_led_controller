@@ -1,13 +1,17 @@
 
 import struct
+from .. import class_codec
 
 MAPPED_EEPROM_START = 0x1000
 
-class cfgObject:
+class cfgObject(class_codec.encodable_class):
     """
     Base class for any object in the configuration EEPROM
     that is referenced indirectly via pointer.
     """
+    
+    _encode_schema = {}
+    
     def __init__(self):
         
         """
@@ -60,6 +64,10 @@ class Transition(cfgObject):
     """
     ID = None
     
+    _encode_schema = {
+        "delay":int
+    }
+    
     def __init__(self):
         cfgObject.__init__(self)
         
@@ -89,6 +97,10 @@ class Transition(cfgObject):
 #---------------------------------------------------------------------------------------------------
 class trans_Immediate(Transition):
     ID = 0
+    
+    _encode_schema = {
+        "color":(int, int, int, int)
+    }
     
     def __init__(self, color = (0,0,0,0)):
         Transition.__init__(self)
@@ -124,6 +136,11 @@ class trans_Immediate(Transition):
 #---------------------------------------------------------------------------------------------------
 class trans_Fade(Transition):
     ID = 1
+    
+    _encode_schema = {
+        "color":(int, int, int, int),
+        "duration":int
+    }
     
     def __init__(self):
         Transition.__init__(self)
@@ -163,9 +180,59 @@ class trans_Fade(Transition):
             
         return(True)
     
+
+#---------------------------------------------------------------------------------------------------
+class ColorList(cfgObject):
+    
+    _encode_schema = {
+        "colors":[(int,int,int,int)]
+    }
+    
+    def __init__(self):
+        cfgObject.__init__(self)
+        
+        """
+        list of 4-tuples of raw rgbw values
+        (r,g,b,w)
+        """
+        self.colors = [(0,0,0,0)]
+        
+    #-----------------------------------------------
+    def to_binary(self):
+        
+        # uint8_t n_colors
+        # [pack byte]
+        b = struct.pack("<Bx", len(self.colors))
+        for color in self.colors:
+            # rgbw_t color:
+            #   uint16_t r
+            #   uint16_t g
+            #   uint16_t b
+            #   uint16_t w
+            b += struct.pack("<HHHH", *self.colors)
+            
+        return(b)
+        
+    #-----------------------------------------------
+    # Utility Methods
+    #-----------------------------------------------
+    def __eq__(self, other):
+        if(not cfgObject.__eq__(self, other)):
+            return(False)
+        
+        if(self.colors != other.colors):
+            return(False)
+        
+        return(True)
+
 #---------------------------------------------------------------------------------------------------
 class trans_Waveform(Transition):
     ID = 2
+    
+    _encode_schema = {
+        "waveform":ColorList,
+        "duration":int
+    }
     
     def __init__(self):
         Transition.__init__(self)
@@ -216,50 +283,16 @@ class trans_Waveform(Transition):
             return(False)
         
         return(True)
-
-#---------------------------------------------------------------------------------------------------
-class ColorList(cfgObject):
-    def __init__(self):
-        cfgObject.__init__(self)
-        
-        """
-        list of 4-tuples of raw rgbw values
-        (r,g,b,w)
-        """
-        self.colors = [(0,0,0,0)]
-        
-    #-----------------------------------------------
-    def to_binary(self):
-        
-        # uint8_t n_colors
-        # [pack byte]
-        b = struct.pack("<Bx", len(self.colors))
-        for color in self.colors:
-            # rgbw_t color:
-            #   uint16_t r
-            #   uint16_t g
-            #   uint16_t b
-            #   uint16_t w
-            b += struct.pack("<HHHH", *self.colors)
-            
-        return(b)
-        
-    #-----------------------------------------------
-    # Utility Methods
-    #-----------------------------------------------
-    def __eq__(self, other):
-        if(not cfgObject.__eq__(self, other)):
-            return(False)
-        
-        if(self.colors != other.colors):
-            return(False)
-        
-        return(True)
     
 #===================================================================================================
 # ModeSets
 #===================================================================================================
 class ModeSet(cfgObject):
+    
+    _encode_schema = {
+        "modes":[(Transition,Transition)]
+    }
+    
     def __init__(self):
         cfgObject.__init__(self)
         
@@ -323,7 +356,15 @@ class ModeSet(cfgObject):
 # Alarm Tables
 #===================================================================================================
 
-class AlarmEntry:
+class AlarmEntry(class_codec.encodable_class):
+    
+    _encode_schema = {
+        "dow_list":[int],
+        "hour":int,
+        "minute":int,
+        "data":cfgObject
+    }
+    
     def __init__(self):
         
         """
@@ -388,6 +429,11 @@ class AlarmEntry:
         
 #---------------------------------------------------------------------------------------------------
 class AlarmTable(cfgObject):
+    
+    _encode_schema = {
+        "alarms":[AlarmEntry]
+    }
+    
     def __init__(self):
         cfgObject.__init__(self)
         
@@ -440,7 +486,14 @@ class AlarmTable(cfgObject):
         return(True)
         
 #===================================================================================================
-class eeConfig:
+class eeConfig(class_codec.encodable_class):
+    
+    _encode_schema = {
+        "default_modeset":ModeSet,
+        "lighting_alarm_table":AlarmTable,
+        "modeset_change_table":AlarmTable
+    }
+    
     def __init__(self):
         
         """
