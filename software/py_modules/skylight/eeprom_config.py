@@ -552,4 +552,7 @@ def compile(cfg):
     hdr = cfg.to_binary()
     image = hdr + image[len(hdr):]
     
+    if(len(image) > 2048):
+        raise Exception("Configuration image exceeds 2kB. Will not fit in EEPROM")
+    
     return(image)

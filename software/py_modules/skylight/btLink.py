@@ -2,6 +2,7 @@
 import serial
 import logging
 import time
+import binascii
 
 class CMDError(Exception):
     pass
@@ -145,4 +146,20 @@ class btLink:
         ))
         
         self.cmd("set_dst %d %d\r\n" % (time.daylight, now.tm_isdst))
+    
+    #-----------------------------------------------------------------------------------------------
+    def send_config(self, image):
+        
+        # Pad image to be a multiple of the page size (32-bytes)
+        if((len(image)%32) != 0):
+            image += b"\xFF" * (32 - len(image)%32)
+        
+        self.cmd("cfg_erase\r\n")
+        
+        for addr in range(0, len(image), 32):
+            page = addr/32
+            hex_str = binascii.hexlify(image[addr:addr+32]).decode('ascii')
+            self.cmd("cfg_write %X %s\r\n" % (page, hex_str))
+        
+        self.cmd("cfg_reload\r\n")
     
