@@ -11,7 +11,7 @@
 #include <uart_io.h>
 #include <board.h>
 #include <rtc.h>
-#include <string_ext.h>
+#include <uart_io_ext.h>
 
 #include "led_pwm.h"
 #include "debug.h"
@@ -121,36 +121,28 @@ int cmd_rgbw(uint8_t argc, char *argv[]){
 //--------------------------------------------------------------------------------------------------
 int cmd_get_time(uint8_t argc, char *argv[]){
     calendar_time_t T;
-    char tmp[5];
     
     calendar_get_time(&T);
     
-    snprint_x8(tmp,sizeof(tmp),T.dayofweek);
-    cli_puts(tmp);
-    cli_putc(' ');
+    uart_put_x8(T.dayofweek);
+    uart_putc(' ');
     
-    snprint_x16(tmp,sizeof(tmp),T.year);
-    cli_puts(tmp);
-    cli_putc(' ');
+    uart_put_x16(T.year);
+    uart_putc(' ');
     
-    snprint_x8(tmp,sizeof(tmp),T.month);
-    cli_puts(tmp);
-    cli_putc(' ');
+    uart_put_x8(T.month);
+    uart_putc(' ');
     
-    snprint_x8(tmp,sizeof(tmp),T.day);
-    cli_puts(tmp);
-    cli_putc(' ');
+    uart_put_x8(T.day);
+    uart_putc(' ');
     
-    snprint_x8(tmp,sizeof(tmp),T.hour);
-    cli_puts(tmp);
-    cli_putc(' ');
+    uart_put_x8(T.hour);
+    uart_putc(' ');
     
-    snprint_x8(tmp,sizeof(tmp),T.minute);
-    cli_puts(tmp);
-    cli_putc(' ');
+    uart_put_x8(T.minute);
+    uart_putc(' ');
     
-    snprint_x8(tmp,sizeof(tmp),T.second);
-    cli_puts(tmp);
+    uart_put_x8(T.second);
     
     return(0);
 }
@@ -229,9 +221,7 @@ int cmd_cfg_read(uint8_t argc, char *argv[]){
     data = (uint8_t*) address;
     
     for(uint8_t i=0; i<EEPROM_PAGE_SIZE; i++){
-        char tmp[3];
-        snprint_x8(tmp,sizeof(tmp),data[i]);
-        cli_puts(tmp);
+        uart_put_x8(data[i]);
     }
     
     return(0);
@@ -240,5 +230,5 @@ int cmd_cfg_read(uint8_t argc, char *argv[]){
 //--------------------------------------------------------------------------------------------------
 
 int cmd_xxx(uint8_t argc, char *argv[]){
-    return(0);
+    return(eecfg_print_me());
 }

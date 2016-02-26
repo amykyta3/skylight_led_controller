@@ -22,11 +22,13 @@
 //--------------------------------------------------------------------------------------------------
 
 static uint8_t edge_counter;
+static uint8_t previously_was_off;
 
 //--------------------------------------------------------------------------------------------------
 void light_switch_init(){
     
     edge_counter = 0;
+    previously_was_off = 1;
     
     // Pre-configure timer
     TCE0.CTRLA = TC_CLKSEL_OFF_gc;
@@ -137,6 +139,7 @@ static void ev_switch_on(){
         rgbw.w = 0xFFFF;
         pwm_set_value(&rgbw);
     }
+    previously_was_off = 0;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -144,11 +147,12 @@ static void ev_switch_off(){
     uint8_t mode;
     event_PopEventData(&mode, sizeof(mode));
     
-    if(Cfg.current_modeset){
+    if(Cfg.current_modeset && !previously_was_off){
         mode = mode % Cfg.current_modeset->n;
         transition_start(Cfg.current_modeset->modes[mode].off);
     }else{
         // no configuration loaded. Do something sane
+        // .. or if transition was off --> off, do immediate off
         rgbw_t rgbw;
         
         // Abort any transitions in progress
@@ -160,4 +164,5 @@ static void ev_switch_off(){
         rgbw.w = 0;
         pwm_set_value(&rgbw);
     }
+    previously_was_off = 1;
 }

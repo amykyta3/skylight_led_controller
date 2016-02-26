@@ -34,7 +34,7 @@ class btLink:
         except CMDError:
             # ignore.
             pass
-        
+        self.cmd("echo 0\r\n")
     
     #-----------------------------------------------------------------------------------------------
     def close(self):

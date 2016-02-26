@@ -77,9 +77,8 @@ class Transition(cfgObject):
     #-----------------------------------------------
     def to_binary(self):
         # uint8_t ID
-        # [pad byte]
         # uint16_t delay
-        b = struct.pack("<BxH", self.ID, self.delay)
+        b = struct.pack("<BH", self.ID, self.delay)
         return(b)
         
     #-----------------------------------------------
@@ -163,7 +162,7 @@ class trans_Fade(Transition):
         # uint16_t duration
         
         b += struct.pack("<HHHH", *self.color)
-        b += struct.pack("<HHHHH", self.duration)
+        b += struct.pack("<H", self.duration)
         return(b)
     #-----------------------------------------------
     # Utility Methods
@@ -201,8 +200,7 @@ class ColorList(cfgObject):
     def to_binary(self):
         
         # uint8_t n_colors
-        # [pack byte]
-        b = struct.pack("<Bx", len(self.colors))
+        b = struct.pack("<B", len(self.colors))
         for color in self.colors:
             # rgbw_t color:
             #   uint16_t r
@@ -330,8 +328,7 @@ class ModeSet(cfgObject):
     def to_binary(self):
         
         # uint8_t n_modes
-        # [pack byte]
-        b = struct.pack("<Bx", len(self.modes))
+        b = struct.pack("<B", len(self.modes))
         for mode in self.modes:
             # mode_entry_t
             #   uintptr_t on_transition
@@ -400,9 +397,8 @@ class AlarmEntry(class_codec.encodable_class):
         # uint8_t dayofweek_mask
         # uint8_t hour
         # uint8_t minute
-        # [pack byte]
         # uintptr_t data
-        b = struct.pack("<BBBxH", dow_mask, self.hour, self.minute, self.data.ee_address)
+        b = struct.pack("<BBBH", dow_mask, self.hour, self.minute, self.data.ee_address)
         return(b)
         
     #-----------------------------------------------
@@ -467,8 +463,7 @@ class AlarmTable(cfgObject):
     def to_binary(self):
         
         # uint8_t n_items
-        # [pack byte]
-        b = struct.pack("<Bx", len(self.alarms))
+        b = struct.pack("<B", len(self.alarms))
         for alarm in self.alarms:
             b += alarm.to_binary()
             
@@ -518,11 +513,10 @@ class eeConfig(class_codec.encodable_class):
         # uintptr_t default_modeset
         # uintptr_t lighting_alarm_table
         # uintptr_t modeset_change_table
-        # [pack byte 2x]
         if(dummy):
-            b = struct.pack("<IHHHxx", 0, 0, 0, 0)
+            b = struct.pack("<IHHH", 0, 0, 0, 0)
         else:
-            b = struct.pack("<IHHHxx", 0,
+            b = struct.pack("<IHHH", 0,
                                 self.default_modeset.ee_address,
                                 self.lighting_alarm_table.ee_address,
                                 self.modeset_change_table.ee_address,

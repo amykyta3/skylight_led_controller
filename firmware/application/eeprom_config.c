@@ -5,6 +5,8 @@
 #include <avr/io.h>
 
 #include <rtc.h>
+#include <uart_io.h>
+#include <uart_io_ext.h>
 
 #include "timestamp.h"
 #include "led_transitions.h"
@@ -157,4 +159,216 @@ void eecfg_write_page(uint8_t page, void *data){
 	NVM_EXEC();
     
     while(NVM.STATUS & NVM_NVMBUSY_bm);
+}
+
+//==============================================================================
+// Config Printer
+// Print the contents of the config for debug
+//==============================================================================
+
+static void print_newline(uint8_t indent){
+    uart_puts("\r\n");
+    while(indent){
+        uart_putc(' ');
+        indent--;
+    }
+}
+
+static void print_color_list(color_list_t *o, uint8_t indent){
+    print_newline(indent);
+    uart_putc('[');
+    
+    for(uint8_t i=0; i < o->n; i++){
+        print_newline(indent+1);
+        uart_putc('(');
+        uart_put_x16(o->colors[i].r);
+        uart_putc(',');
+        uart_put_x16(o->colors[i].g);
+        uart_putc(',');
+        uart_put_x16(o->colors[i].b);
+        uart_putc(',');
+        uart_put_x16(o->colors[i].w);
+        uart_putc(')');
+    }
+    
+    print_newline(indent);
+    uart_putc(']');
+}
+
+static void print_transition(transition_t *o, uint8_t indent){
+    print_newline(indent);
+    uart_putc('{');
+    
+    print_newline(indent+1);
+    uart_puts("delay: ");
+    uart_put_d16(o->delay);
+    
+    switch(o->type){
+        case TRANS_IMMEDIATE:
+            print_newline(indent+1);
+            uart_puts("type: immediate");
+            
+            print_newline(indent+1);
+            uart_puts("color: (");
+            uart_put_x16(o->immediate.color.r);
+            uart_putc(',');
+            uart_put_x16(o->immediate.color.g);
+            uart_putc(',');
+            uart_put_x16(o->immediate.color.b);
+            uart_putc(',');
+            uart_put_x16(o->immediate.color.w);
+            uart_putc(')');
+            
+            break;
+        case TRANS_FADE:
+            print_newline(indent+1);
+            uart_puts("type: fade");
+            
+            print_newline(indent+1);
+            uart_puts("color: (");
+            uart_put_x16(o->fade.color.r);
+            uart_putc(',');
+            uart_put_x16(o->fade.color.g);
+            uart_putc(',');
+            uart_put_x16(o->fade.color.b);
+            uart_putc(',');
+            uart_put_x16(o->fade.color.w);
+            uart_putc(')');
+            
+            print_newline(indent+1);
+            uart_puts("duration: ");
+            uart_put_d16(o->fade.duration);
+            
+            break;
+        case TRANS_WAVEFORM:
+            print_newline(indent+1);
+            uart_puts("type: waveform");
+            
+            print_newline(indent+1);
+            uart_puts("waveform: @");
+            uart_put_x16((uint16_t)o->waveform.waveform);
+            print_color_list(o->waveform.waveform, indent+2);
+            
+            print_newline(indent+1);
+            uart_puts("duration: ");
+            uart_put_d16(o->waveform.duration);
+            
+            break;
+    }
+    
+    print_newline(indent);
+    uart_putc('}');
+}
+
+static void print_modeset(modeset_t *o, uint8_t indent){
+    print_newline(indent);
+    uart_putc('[');
+    for(uint8_t i=0; i < o->n; i++){
+        print_newline(indent+1);
+        uart_putc('{');
+        
+        print_newline(indent+2);
+        uart_puts("on: @");
+        uart_put_x16((uint16_t)o->modes[i].on);
+        print_transition(o->modes[i].on, indent+3);
+        
+        print_newline(indent+2);
+        uart_puts("off: @");
+        uart_put_x16((uint16_t)o->modes[i].off);
+        print_transition(o->modes[i].off, indent+3);
+        
+        print_newline(indent+1);
+        uart_putc('}');
+    }
+    print_newline(indent);
+    uart_putc(']');
+}
+
+static void print_lighting_alarm_table(lighting_alarm_table_t *o, uint8_t indent){
+    print_newline(indent);
+    uart_putc('[');
+    
+    for(uint8_t i=0; i < o->n; i++){
+        print_newline(indent+1);
+        uart_putc('{');
+        
+        print_newline(indent+2);
+        uart_puts("DOW: ");
+        uart_put_x8(o->alarms[i].dayofweek_mask);
+        
+        print_newline(indent+2);
+        uart_puts("hour: ");
+        uart_put_d8(o->alarms[i].hour);
+        
+        print_newline(indent+2);
+        uart_puts("minute: ");
+        uart_put_d8(o->alarms[i].minute);
+        
+        print_newline(indent+2);
+        uart_puts("transition: @");
+        uart_put_x16((uint16_t)o->alarms[i].transition);
+        print_transition(o->alarms[i].transition, indent+3);
+        
+        print_newline(indent+1);
+        uart_putc('}');
+    }
+    
+    print_newline(indent);
+    uart_putc(']');
+}
+
+static void print_modeset_change_table(modeset_change_table_t *o, uint8_t indent){
+    print_newline(indent);
+    uart_putc('[');
+    
+    for(uint8_t i=0; i < o->n; i++){
+        print_newline(indent+1);
+        uart_putc('{');
+        
+        print_newline(indent+2);
+        uart_puts("DOW: ");
+        uart_put_x8(o->alarms[i].dayofweek_mask);
+        
+        print_newline(indent+2);
+        uart_puts("hour: ");
+        uart_put_d8(o->alarms[i].hour);
+        
+        print_newline(indent+2);
+        uart_puts("minute: ");
+        uart_put_d8(o->alarms[i].minute);
+        
+        print_newline(indent+2);
+        uart_puts("modeset: @");
+        uart_put_x16((uint16_t)o->alarms[i].modeset);
+        print_modeset(o->alarms[i].modeset, indent+3);
+        
+        print_newline(indent+1);
+        uart_putc('}');
+    }
+    
+    print_newline(indent);
+    uart_putc(']');
+}
+
+int eecfg_print_me(void){
+    
+    if(eeConfig.timestamp == Build_Timestamp){
+        print_newline(0);
+        uart_puts("default_modeset: @");
+        uart_put_x16((uint16_t)eeConfig.default_modeset);
+        print_modeset(eeConfig.default_modeset, 1);
+        
+        print_newline(0);
+        uart_puts("lighting_alarm_table: @");
+        uart_put_x16((uint16_t)eeConfig.lighting_alarm_table);
+        print_lighting_alarm_table(eeConfig.lighting_alarm_table, 1);
+        
+        print_newline(0);
+        uart_puts("modeset_change_table: @");
+        uart_put_x16((uint16_t)eeConfig.modeset_change_table);
+        print_modeset_change_table(eeConfig.modeset_change_table, 1);
+        return(0);
+    }else{
+        return(-1);
+    }
 }

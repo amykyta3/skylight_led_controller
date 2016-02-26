@@ -120,4 +120,7 @@ void eecfg_erase(void);
  **/
 void eecfg_write_page(uint8_t page, void *data);
 
+// DEBUG
+int eecfg_print_me(void);
+
 #endif
