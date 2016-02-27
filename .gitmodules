@@ -2,3 +2,7 @@
 	path = firmware/common/atxmega_modules
 	url = https://github.com/amykyta3/atxmega_modules.git
 	branch = master
+[submodule "software/py_modules/python_modules"]
+	path = software/py_modules/python_modules
+	url = git@github.com:amykyta3/python_modules.git
+	branch = master

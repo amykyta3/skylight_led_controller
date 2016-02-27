@@ -4,7 +4,7 @@ import sys
 import argparse
 import logging
 import py_modules.skylight as skylight
-from py_modules.app import App
+from py_modules.python_modules.app import App
 
 class FirmwareLoader(App):
   def set_cmdline_args(self, parser):

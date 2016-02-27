@@ -5,7 +5,7 @@ import argparse
 import logging
 import json
 import py_modules.skylight as skylight
-from py_modules.app import App
+from py_modules.python_modules.app import App
 
 class ConfigLoader(App):
   def set_cmdline_args(self, parser):

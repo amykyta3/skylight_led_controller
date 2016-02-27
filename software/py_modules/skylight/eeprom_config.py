@@ -1,6 +1,6 @@
 
 import struct
-from .. import class_codec
+from ..python_modules import class_codec
 
 MAPPED_EEPROM_START = 0x1000
 
