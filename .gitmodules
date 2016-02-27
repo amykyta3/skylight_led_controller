@@ -1,3 +1,4 @@
 [submodule "firmware/common/atxmega_modules"]
 	path = firmware/common/atxmega_modules
 	url = https://github.com/amykyta3/atxmega_modules.git
+	branch = master
