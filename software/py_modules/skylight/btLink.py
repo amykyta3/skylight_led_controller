@@ -148,6 +148,11 @@ class btLink:
         self.cmd("set_dst %d %d\r\n" % (time.daylight, now.tm_isdst))
     
     #-----------------------------------------------------------------------------------------------
+    def set_rgbw(self, color):
+        rgbw = color.get_rgbw()
+        self.cmd("rgbw %x %x %x %x\r\n" % rgbw)
+        
+    #-----------------------------------------------------------------------------------------------
     def send_config(self, image):
         
         # Pad image to be a multiple of the page size (32-bytes)

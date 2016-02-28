@@ -1,9 +1,16 @@
 
 import struct
 from ..python_modules import class_codec
+from . import colors
+
+#===================================================================================================
+# Microcontroller Constants
+#===================================================================================================
 
 MAPPED_EEPROM_START = 0x1000
+TICKS_PER_SECOND = 64
 
+#===================================================================================================
 class cfgObject(class_codec.encodable_class):
     """
     Base class for any object in the configuration EEPROM
@@ -65,20 +72,24 @@ class Transition(cfgObject):
     ID = None
     
     _encode_schema = {
-        "delay":int
+        "delay":float
     }
     
     def __init__(self):
         cfgObject.__init__(self)
         
-        """ Number of ticks of delay before transition starts """
-        self.delay = 0
+        """ Number of seconds of delay before transition starts """
+        self.delay = 0.0
     
     #-----------------------------------------------
     def to_binary(self):
+        
+        # Convert delay seconds into ticks
+        delay_ticks = int(self.delay * TICKS_PER_SECOND)
+        
         # uint8_t ID
         # uint16_t delay
-        b = struct.pack("<BH", self.ID, self.delay)
+        b = struct.pack("<BH", self.ID, delay_ticks)
         return(b)
         
     #-----------------------------------------------
@@ -98,10 +109,10 @@ class trans_Immediate(Transition):
     ID = 0
     
     _encode_schema = {
-        "color":(int, int, int, int)
+        "color": colors.Color
     }
     
-    def __init__(self, color = (0,0,0,0)):
+    def __init__(self, color = colors.Color_rgb(0,0,0)):
         Transition.__init__(self)
         
         """ Color setting after transition completes """
@@ -109,6 +120,8 @@ class trans_Immediate(Transition):
         
     #-----------------------------------------------
     def to_binary(self):
+        rgbw_tuple = self.color.get_rgbw()
+        
         b = Transition.to_binary(self)
         
         # rgbw_t color:
@@ -116,8 +129,7 @@ class trans_Immediate(Transition):
         #   uint16_t g
         #   uint16_t b
         #   uint16_t w
-        
-        b += struct.pack("<HHHH", *self.color)
+        b += struct.pack("<HHHH", *rgbw_tuple)
         return(b)
         
     #-----------------------------------------------
@@ -137,21 +149,27 @@ class trans_Fade(Transition):
     ID = 1
     
     _encode_schema = {
-        "color":(int, int, int, int),
-        "duration":int
+        "color": colors.Color,
+        "duration":float
     }
     
     def __init__(self):
         Transition.__init__(self)
         
         """ Color setting after transition completes """
-        self.color = (0,0,0,0)
+        self.color = colors.Color_rgb(0,0,0)
         
-        """ Number of ticks the transition takes """
-        self.duration = 0
+        """ Number of seconds the transition takes """
+        self.duration = 0.0
         
     #-----------------------------------------------
     def to_binary(self):
+        
+        # Convert duration seconds into ticks
+        duration_ticks = int(self.duration * TICKS_PER_SECOND)
+        
+        rgbw_tuple = self.color.get_rgbw()
+        
         b = Transition.to_binary(self)
         
         # rgbw_t color:
@@ -160,9 +178,8 @@ class trans_Fade(Transition):
         #   uint16_t b
         #   uint16_t w
         # uint16_t duration
-        
-        b += struct.pack("<HHHH", *self.color)
-        b += struct.pack("<H", self.duration)
+        b += struct.pack("<HHHH", *rgbw_tuple)
+        b += struct.pack("<H", duration_ticks)
         return(b)
     #-----------------------------------------------
     # Utility Methods
@@ -184,17 +201,16 @@ class trans_Fade(Transition):
 class ColorList(cfgObject):
     
     _encode_schema = {
-        "colors":[(int,int,int,int)]
+        "colors":[colors.Color]
     }
     
     def __init__(self):
         cfgObject.__init__(self)
         
         """
-        list of 4-tuples of raw rgbw values
-        (r,g,b,w)
+        list of colors
         """
-        self.colors = [(0,0,0,0)]
+        self.colors = [colors.Color_rgb(0,0,0)]
         
     #-----------------------------------------------
     def to_binary(self):
@@ -202,12 +218,14 @@ class ColorList(cfgObject):
         # uint8_t n_colors
         b = struct.pack("<B", len(self.colors))
         for color in self.colors:
+            rgbw_tuple = color.get_rgbw()
+            
             # rgbw_t color:
             #   uint16_t r
             #   uint16_t g
             #   uint16_t b
             #   uint16_t w
-            b += struct.pack("<HHHH", *self.colors)
+            b += struct.pack("<HHHH", *rgbw_tuple)
             
         return(b)
         
@@ -229,7 +247,7 @@ class trans_Waveform(Transition):
     
     _encode_schema = {
         "waveform":ColorList,
-        "duration":int
+        "duration":float
     }
     
     def __init__(self):
@@ -239,7 +257,7 @@ class trans_Waveform(Transition):
         self.waveform = ColorList()
         
         """ Number of ticks the transition takes """
-        self.duration = 0
+        self.duration = 0.0
         
     #-----------------------------------------------
     def get_all_objects(self):
@@ -259,12 +277,15 @@ class trans_Waveform(Transition):
     
     #-----------------------------------------------
     def to_binary(self):
+        
         b = Transition.to_binary(self)
         
-        # uintptr_t waveform
-        # uint16_t duration
+        # Convert duration seconds into ticks
+        duration_ticks = int(self.duration * TICKS_PER_SECOND)
         
-        b += struct.pack("<HH", self.waveform.ee_address, self.duration)
+        # uintptr_t waveform
+        # uint16_t duration_ticks
+        b += struct.pack("<HH", self.waveform.ee_address, duration_ticks)
         return(b)
         
     #-----------------------------------------------
@@ -300,8 +321,8 @@ class ModeSet(cfgObject):
         """
         self.modes = [
             (
-                trans_Immediate((0,0,0,0xFFFF)),
-                trans_Immediate((0,0,0,0))
+                trans_Immediate(colors.Color_rgb(1.0,1.0,1.0)),
+                trans_Immediate(colors.Color_rgb(0.0,0.0,0.0))
             )
         ]
         
