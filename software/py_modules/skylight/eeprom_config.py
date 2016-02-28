@@ -17,9 +17,13 @@ class cfgObject(class_codec.encodable_class):
     that is referenced indirectly via pointer.
     """
     
-    _encode_schema = {}
+    _encode_schema = {
+        "name": str
+    }
     
     def __init__(self):
+        
+        self.name = ""
         
         """
         Byte address within EEPROM that this object is located
@@ -553,74 +557,71 @@ class eeConfig(class_codec.encodable_class):
         
         return(obj)
 
-
-#===================================================================================================
-def compile(cfg):
-    """
-    Compile the configuration into an EEPROM image
-    """
-    if(type(cfg) != eeConfig):
-        raise TypeError("cfg must be an instance of eeConfig")
-    
-    # Initialize EEPROM address
-    ee_address = MAPPED_EEPROM_START
-    
-    # Create dummy header for now
-    image = cfg.to_binary(dummy=True)
-    ee_address += len(image)
-    
-    # Collect a list of all cfgObject instances in the entire configuration
-    uncompiled = cfg.get_all_objects()
-    
-    # Reset each object's compile state (Make sure their ee_address are all None)
-    for o in uncompiled:
-        o.ee_address = None
-    
-    # Loop until all objects have been compiled
-    compiled = []
-    while(len(uncompiled) != 0):
-        still_uncompiled = []
+    #-----------------------------------------------
+    def compile(self):
+        """
+        Compile the configuration into an EEPROM image
+        """
+        
+        # Initialize EEPROM address
+        ee_address = MAPPED_EEPROM_START
+        
+        # Create dummy header for now
+        image = self.to_binary(dummy=True)
+        ee_address += len(image)
+        
+        # Collect a list of all cfgObject instances in the entire configuration
+        uncompiled = self.get_all_objects()
+        
+        # Reset each object's compile state (Make sure their ee_address are all None)
         for o in uncompiled:
-            if(o.is_compilable()):
-                # Compile the object
-                
-                # First, check if an equivalent copy of the object already exists
-                for co in compiled:
-                    if(o == co):
-                        # An equivalent object has already been compiled.
-                        # Reuse that object by sharing the reference to it
-                        o.ee_address = co.ee_address
-                        break
+            o.ee_address = None
+        
+        # Loop until all objects have been compiled
+        compiled = []
+        while(len(uncompiled) != 0):
+            still_uncompiled = []
+            for o in uncompiled:
+                if(o.is_compilable()):
+                    # Compile the object
+                    
+                    # First, check if an equivalent copy of the object already exists
+                    for co in compiled:
+                        if(o == co):
+                            # An equivalent object has already been compiled.
+                            # Reuse that object by sharing the reference to it
+                            o.ee_address = co.ee_address
+                            break
+                    else:
+                        # An equivalent does not exist.
+                        # Compile it.
+                        
+                        # Append to EEPROM image and assign the resulting ee_address
+                        b = o.to_binary()
+                        o.ee_address = ee_address
+                        ee_address += len(b)
+                        image += b
+                        
+                        # Save to compiled list for potential reuse
+                        compiled.append(o)
+                    
                 else:
-                    # An equivalent does not exist.
-                    # Compile it.
-                    
-                    # Append to EEPROM image and assign the resulting ee_address
-                    b = o.to_binary()
-                    o.ee_address = ee_address
-                    ee_address += len(b)
-                    image += b
-                    
-                    # Save to compiled list for potential reuse
-                    compiled.append(o)
-                
-            else:
-                # Not compilable yet. Set aside
-                still_uncompiled.append(o)
+                    # Not compilable yet. Set aside
+                    still_uncompiled.append(o)
+            
+            # Finished loop through uncompiled list
+            if(not len(still_uncompiled) < len(uncompiled)):
+                # This pass did not accomplish anything!
+                raise Exception("Compile is stuck! Pass did not make any progress")
+            
+            uncompiled = still_uncompiled
         
-        # Finished loop through uncompiled list
-        if(not len(still_uncompiled) < len(uncompiled)):
-            # This pass did not accomplish anything!
-            raise Exception("Compile is stuck! Pass did not make any progress")
+        # Finished compiling objects.
+        # Replace header with actual header
+        hdr = self.to_binary()
+        image = hdr + image[len(hdr):]
         
-        uncompiled = still_uncompiled
-    
-    # Finished compiling objects.
-    # Replace header with actual header
-    hdr = cfg.to_binary()
-    image = hdr + image[len(hdr):]
-    
-    if(len(image) > 2048):
-        raise Exception("Configuration image exceeds 2kB. Will not fit in EEPROM")
-    
-    return(image)
+        if(len(image) > 2048):
+            raise Exception("Configuration image exceeds 2kB. Will not fit in EEPROM")
+        
+        return(image)
