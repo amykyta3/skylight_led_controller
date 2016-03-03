@@ -116,11 +116,11 @@ class trans_Immediate(Transition):
         "color": colors.Color
     }
     
-    def __init__(self, color = colors.Color_rgb(0,0,0)):
+    def __init__(self):
         Transition.__init__(self)
         
         """ Color setting after transition completes """
-        self.color = color
+        self.color = colors.Color_rgb(0,0,0)
         
     #-----------------------------------------------
     def to_binary(self):
@@ -164,7 +164,7 @@ class trans_Fade(Transition):
         self.color = colors.Color_rgb(0,0,0)
         
         """ Number of seconds the transition takes """
-        self.duration = 0.0
+        self.duration = 1.0
         
     #-----------------------------------------------
     def to_binary(self):
@@ -319,14 +319,19 @@ class ModeSet(cfgObject):
     def __init__(self):
         cfgObject.__init__(self)
         
+        # initialize with default
+        trans_on  = trans_Immediate()
+        trans_off = trans_Immediate()
+        trans_on.color = colors.Color_rgbw(0x0000, 0x0000, 0x0000, 0xFFFF)
+        
         """
         List of 2-tuples of handles to on/off transition objects
         (on_transition, off_transition)
         """
         self.modes = [
             (
-                trans_Immediate(colors.Color_rgb(1.0,1.0,1.0)),
-                trans_Immediate(colors.Color_rgb(0.0,0.0,0.0))
+                trans_on,
+                trans_off
             )
         ]
         
@@ -381,6 +386,7 @@ class ModeSet(cfgObject):
 class AlarmEntry(class_codec.encodable_class):
     
     _encode_schema = {
+        "name":str,
         "dow_list":[int],
         "hour":int,
         "minute":int,
@@ -388,6 +394,8 @@ class AlarmEntry(class_codec.encodable_class):
     }
     
     def __init__(self):
+        
+        self.name = ""
         
         """
         List of days of the week that the alarm fires.
@@ -456,7 +464,7 @@ class AlarmTable(cfgObject):
     }
     
     def __init__(self):
-        cfgObject.__init__(self)
+        cfgObject.__init__(self, "N/A")
         
         """
         List of AlarmEntry items
@@ -519,7 +527,7 @@ class eeConfig(class_codec.encodable_class):
         """
         Handle to default ModeSet
         """
-        self.default_modeset = ModeSet()
+        self.default_modeset = ModeSet("default")
         
         """
         Handle to Lighting Alarm Table
