@@ -319,21 +319,11 @@ class ModeSet(cfgObject):
     def __init__(self):
         cfgObject.__init__(self)
         
-        # initialize with default
-        trans_on  = trans_Immediate()
-        trans_off = trans_Immediate()
-        trans_on.color = colors.Color_rgbw(0x0000, 0x0000, 0x0000, 0xFFFF)
-        
         """
         List of 2-tuples of handles to on/off transition objects
         (on_transition, off_transition)
         """
-        self.modes = [
-            (
-                trans_on,
-                trans_off
-            )
-        ]
+        self.modes = []
         
     #-----------------------------------------------
     def get_all_objects(self):
@@ -538,6 +528,12 @@ class eeConfig(class_codec.encodable_class):
         Handle to Lighting Alarm Table
         """
         self.modeset_change_table = AlarmTable()
+        
+        # Configure default modeset to something sane
+        t_on = trans_Immediate()
+        t_off = trans_Immediate()
+        t_on.color = colors.Color_raw(0x0000,0x0000,0x0000,0xFFFF)
+        self.default_modeset.modes = [(t_on, t_off)]
         
     #-----------------------------------------------
     def to_binary(self, dummy = False):

@@ -7,7 +7,7 @@ from ..python_modules import tk_extensions as tkext
 from . import eeprom_config as eecfg
 
 #---------------------------------------------------------------------------------------------------
-class Edit_LightingAlarm(tkext.Dialog):
+class EditLightingAlarm(tkext.Dialog):
     def __init__(self, parent, LA, LA_list = [], T_list = []):
         """
         LA: Lighting Alarm to edit
@@ -187,7 +187,7 @@ class EditLightingAlarmList(tkext.ListEdit):
         
         tkext.ListEdit.__init__(self, parent = parent, title = "Edit Lighting Alarms", item_list = LA_list)
         
-    def get_item_label(self, I):
+    def get_item_label(self, I, idx):
         return(I.name)
     
     def new_item(self):
@@ -196,14 +196,14 @@ class EditLightingAlarmList(tkext.ListEdit):
         LA.name = "New Alarm"
         
         # Open edit dialog
-        dlg = Edit_LightingAlarm(self.tkWindow, LA, self.item_list, self.T_list)
+        dlg = EditLightingAlarm(self.tkWindow, LA, self.item_list, self.T_list)
         if(dlg.result):
             return(dlg.LA)
         else:
             return(None)
     
     def edit_item(self, I):
-        dlg = Edit_LightingAlarm(self.tkWindow, I, self.item_list, self.T_list)
+        dlg = EditLightingAlarm(self.tkWindow, I, self.item_list, self.T_list)
         if(dlg.result):
             return(dlg.LA)
         else:

@@ -27,20 +27,22 @@ class Edit_trans_Immediate(tkext.Dialog):
         
         # Name
         ttk.Label(master_fr, text="Name:").grid(row=0, column=0, sticky=(tk.N, tk.E))
-        self.txt_name = ttk.Entry(
-            master_fr
-        )
-        self.txt_name.grid(row=0, column=1, sticky=(tk.E, tk.W))
+        self.txt_name_var = tk.StringVar(self.tkWindow)
+        ttk.Entry(
+            master_fr,
+            textvariable = self.txt_name_var
+        ).grid(row=0, column=1, sticky=(tk.E, tk.W))
         
         # Delay
         ttk.Label(master_fr, text="Delay (seconds):").grid(row=1, column=0, sticky=(tk.N, tk.E))
-        self.sb_delay = tk.Spinbox(
+        self.sb_delay_var = tk.DoubleVar(self.tkWindow)
+        tk.Spinbox(
             master_fr,
             from_=0.0,
             to=2400.0,
-            increment=1.0
-        )
-        self.sb_delay.grid(row=1, column=1, sticky=(tk.E, tk.W))
+            increment=1.0,
+            textvariable = self.sb_delay_var
+        ).grid(row=1, column=1, sticky=(tk.E, tk.W))
         
         # Color Chooser
         ttk.Label(master_fr, text="Color:").grid(row=2, column=0, sticky=(tk.N, tk.E))
@@ -69,12 +71,10 @@ class Edit_trans_Immediate(tkext.Dialog):
     def dlg_initialize(self):
         
         # Name
-        self.txt_name.delete(0,tk.END)
-        self.txt_name.insert(tk.END, self.T.name)
+        self.txt_name_var.set(self.T.name)
         
         # Delay
-        self.sb_delay.delete(0,tk.END)
-        self.sb_delay.insert(tk.END, self.T.delay)
+        self.sb_delay_var.set(self.T.delay)
         
         # Color Chooser
         if(type(self.T.color) != colors.Color_rgb):
@@ -91,7 +91,7 @@ class Edit_trans_Immediate(tkext.Dialog):
         #---------------
         # Validate name
         #---------------
-        name = self.txt_name.get().strip()
+        name = self.txt_name_var.get().strip()
         
         # check if name is acceptable
         if(len(name) == 0):
@@ -115,8 +115,8 @@ class Edit_trans_Immediate(tkext.Dialog):
         return(True)
     
     def dlg_apply(self):
-        self.T.name = self.txt_name.get()
-        self.T.delay = float(self.sb_delay.get())
+        self.T.name = self.txt_name_var.get()
+        self.T.delay = self.sb_delay_var.get()
         self.T.color = colors.Color_rgb(*self.color)
     
 #---------------------------------------------------------------------------------------------------
@@ -137,30 +137,33 @@ class Edit_trans_Fade(tkext.Dialog):
         
         # Name
         ttk.Label(master_fr, text="Name:").grid(row=0, column=0, sticky=(tk.N, tk.E))
-        self.txt_name = ttk.Entry(
-            master_fr
-        )
-        self.txt_name.grid(row=0, column=1, sticky=(tk.E, tk.W))
+        self.txt_name_var = tk.StringVar(self.tkWindow)
+        ttk.Entry(
+            master_fr,
+            textvariable = self.txt_name_var
+        ).grid(row=0, column=1, sticky=(tk.E, tk.W))
         
         # Delay
         ttk.Label(master_fr, text="Delay (seconds):").grid(row=1, column=0, sticky=(tk.N, tk.E))
-        self.sb_delay = tk.Spinbox(
+        self.sb_delay_var = tk.DoubleVar(self.tkWindow)
+        tk.Spinbox(
             master_fr,
             from_=0.0,
             to=2400.0,
-            increment=1.0
-        )
-        self.sb_delay.grid(row=1, column=1, sticky=(tk.E, tk.W))
+            increment=1.0,
+            textvariable = self.sb_delay_var
+        ).grid(row=1, column=1, sticky=(tk.E, tk.W))
         
         # Duration
         ttk.Label(master_fr, text="Duration (seconds):").grid(row=2, column=0, sticky=(tk.N, tk.E))
-        self.sb_duration = tk.Spinbox(
+        self.sb_duration_var = tk.DoubleVar(self.tkWindow)
+        tk.Spinbox(
             master_fr,
             from_=0.0,
             to=2400.0,
-            increment=1.0
-        )
-        self.sb_duration.grid(row=2, column=1, sticky=(tk.E, tk.W))
+            increment=1.0,
+            textvariable = self.sb_duration_var
+        ).grid(row=2, column=1, sticky=(tk.E, tk.W))
         
         # Color Chooser
         ttk.Label(master_fr, text="Color:").grid(row=3, column=0, sticky=(tk.N, tk.E))
@@ -189,16 +192,13 @@ class Edit_trans_Fade(tkext.Dialog):
     def dlg_initialize(self):
         
         # Name
-        self.txt_name.delete(0,tk.END)
-        self.txt_name.insert(tk.END, self.T.name)
+        self.txt_name_var.set(self.T.name)
         
         # Delay
-        self.sb_delay.delete(0,tk.END)
-        self.sb_delay.insert(tk.END, self.T.delay)
+        self.sb_delay_var.set(self.T.delay)
         
         # Duration
-        self.sb_duration.delete(0,tk.END)
-        self.sb_duration.insert(tk.END, self.T.duration)
+        self.sb_duration_var.set(self.T.duration)
         
         # Color Chooser
         if(type(self.T.color) != colors.Color_rgb):
@@ -215,7 +215,7 @@ class Edit_trans_Fade(tkext.Dialog):
         #---------------
         # Validate name
         #---------------
-        name = self.txt_name.get().strip()
+        name = self.txt_name_var.get().strip()
         
         # check if name is acceptable
         if(len(name) == 0):
@@ -239,9 +239,9 @@ class Edit_trans_Fade(tkext.Dialog):
         return(True)
     
     def dlg_apply(self):
-        self.T.name = self.txt_name.get()
-        self.T.delay = float(self.sb_delay.get())
-        self.T.duration = float(self.sb_duration.get())
+        self.T.name = self.txt_name_var.get()
+        self.T.delay = self.sb_delay_var.get()
+        self.T.duration = self.sb_duration_var.get()
         self.T.color = colors.Color_rgb(*self.color)
     
 #---------------------------------------------------------------------------------------------------
@@ -304,7 +304,7 @@ class EditTransitionList(tkext.ListEdit):
         
         tkext.ListEdit.__init__(self, parent = parent, title = "Edit Transitions", item_list = T_list)
         
-    def get_item_label(self, I):
+    def get_item_label(self, I, idx):
         return("%s::%s" % (type(I).__name__, I.name))
     
     def new_item(self):
