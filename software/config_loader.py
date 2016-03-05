@@ -25,7 +25,7 @@ class ConfigLoader(App):
             D = json.load(f)
         
         Cfg = skylight.eeConfig.from_dict(D)
-        image = skylight.eeprom_config.compile(Cfg)
+        image = Cfg.compile()
         
         with skylight.btLink(self.options.port) as S:
             S.send_config(image)

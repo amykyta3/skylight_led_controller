@@ -16,13 +16,8 @@ class Color(class_codec.encodable_class):
     # Utility Methods
     #-----------------------------------------------
     def __eq__(self, other):
-        raise Exception("TODO")
-        if(not Transition.__eq__(self, other)):
+        if(type(other) != type(self)):
             return(False)
-        
-        if(self.color != other.color):
-            return(False)
-            
         return(True)
         
 class Color_raw(Color):
@@ -48,6 +43,24 @@ class Color_raw(Color):
         
     def get_rgbw(self):
         return((self.r, self.g, self.b, self.w))
+        
+    #-----------------------------------------------
+    # Utility Methods
+    #-----------------------------------------------
+    def __eq__(self, other):
+        if(not Color.__eq__(self, other)):
+            return(False)
+        
+        if(self.r != other.r):
+            return(False)
+        if(self.g != other.g):
+            return(False)
+        if(self.b != other.b):
+            return(False)
+        if(self.w != other.w):
+            return(False)
+            
+        return(True)
         
 class Color_rgb(Color):
     _encode_schema = {
@@ -92,3 +105,18 @@ class Color_rgb(Color):
         
         return((raw_r, raw_g, raw_b, raw_w))
         
+    #-----------------------------------------------
+    # Utility Methods
+    #-----------------------------------------------
+    def __eq__(self, other):
+        if(not Color.__eq__(self, other)):
+            return(False)
+        
+        if(self.r != other.r):
+            return(False)
+        if(self.g != other.g):
+            return(False)
+        if(self.b != other.b):
+            return(False)
+        
+        return(True)

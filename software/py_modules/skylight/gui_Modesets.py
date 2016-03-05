@@ -238,14 +238,14 @@ class EditModesetAlarm(tkext.ListEdit):
         #---------------
         # Validate hour/minute
         #---------------
-        if((self.sb_hour_var.get() < 0) or (self.sb_hour_var.get() >= 23)):
+        if((self.sb_hour_var.get() < 0) or (self.sb_hour_var.get() > 23)):
             messagebox.showerror(
                 title = "Error!",
                 message = "Hour must be between 0-23."
             )
             return(False)
             
-        if((self.sb_minute_var.get() < 0) or (self.sb_minute_var.get() >= 60)):
+        if((self.sb_minute_var.get() < 0) or (self.sb_minute_var.get() > 59)):
             messagebox.showerror(
                 title = "Error!",
                 message = "Minute must be between 0-59."

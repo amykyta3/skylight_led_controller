@@ -454,7 +454,7 @@ class AlarmTable(cfgObject):
     }
     
     def __init__(self):
-        cfgObject.__init__(self, "N/A")
+        cfgObject.__init__(self)
         
         """
         List of AlarmEntry items
@@ -517,7 +517,7 @@ class eeConfig(class_codec.encodable_class):
         """
         Handle to default ModeSet
         """
-        self.default_modeset = ModeSet("default")
+        self.default_modeset = ModeSet()
         
         """
         Handle to Lighting Alarm Table

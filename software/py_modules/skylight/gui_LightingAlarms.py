@@ -93,8 +93,10 @@ class EditLightingAlarm(tkext.Dialog):
             if(i in self.LA.dow_list):
                 v.set(1)
         
+        print(self.LA.data)
         for i,v in enumerate(self.T_list):
-            if(self.LA.data is v):
+            print(v)
+            if(self.LA.data == v):
                 self.combo_transition.current(i)
                 break
         
@@ -127,14 +129,14 @@ class EditLightingAlarm(tkext.Dialog):
         #---------------
         # Validate hour/minute
         #---------------
-        if((self.sb_hour_var.get() < 0) or (self.sb_hour_var.get() >= 23)):
+        if((self.sb_hour_var.get() < 0) or (self.sb_hour_var.get() > 23)):
             messagebox.showerror(
                 title = "Error!",
                 message = "Hour must be between 0-23."
             )
             return(False)
             
-        if((self.sb_minute_var.get() < 0) or (self.sb_minute_var.get() >= 60)):
+        if((self.sb_minute_var.get() < 0) or (self.sb_minute_var.get() > 59)):
             messagebox.showerror(
                 title = "Error!",
                 message = "Minute must be between 0-59."
