@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+import py_modules.python_modules.tk_extensions as tkext
+tkext.ExceptionHandler.install()
+
 import os
 import sys
 import json
@@ -65,6 +68,12 @@ class skylight_gui(App):
             command=self.pb_send_cfg
         ).pack(fill=tk.X)
         
+        ttk.Button(
+            fr_main,
+            text="Sync Date/Time",
+            command=self.pb_sync_datetime
+        ).pack(fill=tk.X)
+        
         self.fr = fr_main
         
         # block until the window exits
@@ -95,6 +104,11 @@ class skylight_gui(App):
         with skylight.btLink("/dev/rfcomm0") as S:
             S.set_time()
             S.send_config(image)
+            
+    def pb_sync_datetime(self):
+        image = self.Settings.cfg.compile()
+        with skylight.btLink("/dev/rfcomm0") as S:
+            S.set_time()
             
 
 #---------------------------------------------------------------------------------------------------
