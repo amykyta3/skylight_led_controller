@@ -148,8 +148,12 @@ int cmd_get_time(uint8_t argc, char *argv[]){
 }
 
 //--------------------------------------------------------------------------------------------------
+void stop_error_led(void);
+
 int cmd_set_time(uint8_t argc, char *argv[]){
     calendar_time_t T;
+    
+    stop_error_led();
     
     if(argc != 7) return(1);
     T.dayofweek = UNKNOWN_DOW;
@@ -160,6 +164,7 @@ int cmd_set_time(uint8_t argc, char *argv[]){
     T.minute    = xtou16(argv[5]);
     T.second    = xtou16(argv[6]);
     calendar_set_time(&T);
+    
     return(0);
 }
 
