@@ -8,6 +8,7 @@ import sys
 import json
 import tkinter as tk
 from tkinter import ttk
+from tkinter import colorchooser
 
 from py_modules.python_modules.app import App
 import py_modules.python_modules.class_codec as class_codec
@@ -32,6 +33,8 @@ class skylight_gui(App):
         else:
             # create default settings
             self.Settings = skylight_settings()
+        
+        self.color = (0,0,0)
         
         # Run GUI
         self.gui_main()
@@ -74,6 +77,12 @@ class skylight_gui(App):
             command=self.pb_sync_datetime
         ).pack(fill=tk.X)
         
+        ttk.Button(
+            fr_main,
+            text="Set Color",
+            command=self.pb_set_color
+        ).pack(fill=tk.X)
+        
         self.fr = fr_main
         
         # block until the window exits
@@ -109,6 +118,14 @@ class skylight_gui(App):
         image = self.Settings.cfg.compile()
         with skylight.btLink("/dev/rfcomm0") as S:
             S.set_time()
+            
+    def pb_set_color(self):
+        color = colorchooser.askcolor(initialcolor=self.color)[0]
+        if(color):
+            self.color = (int(color[0]), int(color[1]), int(color[2]))
+            C = skylight.colors.Color_rgb(*self.color)
+            with skylight.btLink("/dev/rfcomm0") as S:
+                S.set_rgbw(C)
             
 
 #---------------------------------------------------------------------------------------------------
