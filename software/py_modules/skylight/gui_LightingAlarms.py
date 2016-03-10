@@ -93,7 +93,6 @@ class EditLightingAlarm(tkext.Dialog):
             if(i in self.LA.dow_list):
                 v.set(1)
         
-        print(self.LA.data)
         for i,v in enumerate(self.T_list):
             print(v)
             if(self.LA.data == v):

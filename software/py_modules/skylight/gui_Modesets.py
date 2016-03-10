@@ -202,6 +202,7 @@ class EditModesetAlarm(tkext.ListEdit):
     # Standard Action hooks
     #---------------------------------------------------------------
     def dlg_initialize(self):
+        tkext.ListEdit.dlg_initialize(self)
         self.txt_name_var.set(self.MA.name)
         self.sb_hour_var.set(self.MA.hour)
         self.sb_minute_var.set(self.MA.minute)

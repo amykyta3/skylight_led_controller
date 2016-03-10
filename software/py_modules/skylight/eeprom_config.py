@@ -411,12 +411,11 @@ class AlarmEntry(class_codec.encodable_class):
     
     #-----------------------------------------------
     def to_binary(self):
-        
         # Collapse dow_list into bit mask
         dow_mask = 0
         for dow in self.dow_list:
             dow_mask |= 2**dow
-        
+        print("%0X" % dow_mask)
         # uint8_t dayofweek_mask
         # uint8_t hour
         # uint8_t minute
