@@ -1,127 +1,11 @@
 {
-  "t_list": [
-    {
-      "delay": 0.0,
-      "name": "Sunrise",
-      "duration": 120.0,
-      "__classtype__": "py_modules.skylight.eeprom_config.trans_Fade",
-      "color": {
-        "r": 1.0,
-        "b": 1.0,
-        "__classtype__": "py_modules.skylight.colors.Color_rgb",
-        "g": 1.0
-      }
-    },
-    {
-      "delay": 0.0,
-      "name": "Normal On",
-      "__classtype__": "py_modules.skylight.eeprom_config.trans_Immediate",
-      "color": {
-        "r": 1.0,
-        "b": 1.0,
-        "__classtype__": "py_modules.skylight.colors.Color_rgb",
-        "g": 1.0
-      }
-    },
-    {
-      "delay": 0.0,
-      "name": "Normal Off",
-      "__classtype__": "py_modules.skylight.eeprom_config.trans_Immediate",
-      "color": {
-        "r": 0.0,
-        "b": 0.0,
-        "__classtype__": "py_modules.skylight.colors.Color_rgb",
-        "g": 0.0
-      }
-    },
-    {
-      "delay": 0.0,
-      "name": "Nightlight On",
-      "duration": 1.5,
-      "__classtype__": "py_modules.skylight.eeprom_config.trans_Fade",
-      "color": {
-        "r": 0.6941176470588235,
-        "b": 0.12941176470588237,
-        "__classtype__": "py_modules.skylight.colors.Color_rgb",
-        "g": 0.2235294117647059
-      }
-    },
-    {
-      "delay": 0.0,
-      "name": "White On",
-      "duration": 1.5,
-      "__classtype__": "py_modules.skylight.eeprom_config.trans_Fade",
-      "color": {
-        "r": 1.0,
-        "b": 1.0,
-        "__classtype__": "py_modules.skylight.colors.Color_rgb",
-        "g": 1.0
-      }
-    },
-    {
-      "delay": 0.0,
-      "name": "Off",
-      "duration": 1.5,
-      "__classtype__": "py_modules.skylight.eeprom_config.trans_Fade",
-      "color": {
-        "r": 0.0,
-        "b": 0.0,
-        "__classtype__": "py_modules.skylight.colors.Color_rgb",
-        "g": 0.0
-      }
-    },
-    {
-      "delay": 15.0,
-      "name": "Nightlight Off",
-      "duration": 15.0,
-      "__classtype__": "py_modules.skylight.eeprom_config.trans_Fade",
-      "color": {
-        "r": 0.0,
-        "b": 0.0,
-        "__classtype__": "py_modules.skylight.colors.Color_rgb",
-        "g": 0.0
-      }
-    }
-  ],
+  "__classtype__": "__main__.skylight_settings",
   "cfg": {
-    "default_modeset": {
-      "name": "",
-      "__classtype__": "py_modules.skylight.eeprom_config.ModeSet",
-      "modes": [
-        [
-          {
-            "delay": 0.0,
-            "name": "",
-            "__classtype__": "py_modules.skylight.eeprom_config.trans_Immediate",
-            "color": {
-              "w": 65535,
-              "r": 0,
-              "b": 0,
-              "__classtype__": "py_modules.skylight.colors.Color_raw",
-              "g": 0
-            }
-          },
-          {
-            "delay": 0.0,
-            "name": "",
-            "__classtype__": "py_modules.skylight.eeprom_config.trans_Immediate",
-            "color": {
-              "r": 0.0,
-              "b": 0.0,
-              "__classtype__": "py_modules.skylight.colors.Color_rgb",
-              "g": 0.0
-            }
-          }
-        ]
-      ]
-    },
     "lighting_alarm_table": {
-      "name": "",
+      "__classtype__": "py_modules.skylight.eeprom_config.AlarmTable",
       "alarms": [
         {
-          "minute": 50,
           "name": "Sunrise - Weekday",
-          "__classtype__": "py_modules.skylight.eeprom_config.AlarmEntry",
           "hour": 6,
           "dow_list": [
             1,
@@ -131,44 +15,44 @@
             5
           ],
           "data": {
-            "delay": 0.0,
-            "name": "Sunrise",
-            "duration": 120.0,
             "__classtype__": "py_modules.skylight.eeprom_config.trans_Fade",
+            "delay": 0.0,
+            "duration": 120.0,
             "color": {
-              "r": 1.0,
-              "b": 1.0,
               "__classtype__": "py_modules.skylight.colors.Color_rgb",
-              "g": 1.0
-            }
-          }
+              "b": 1.0,
+              "g": 1.0,
+              "r": 1.0
+            },
+            "name": "Sunrise"
+          },
+          "__classtype__": "py_modules.skylight.eeprom_config.AlarmEntry",
+          "minute": 50
         },
         {
-          "minute": 30,
           "name": "Sunrise - Weekend",
-          "__classtype__": "py_modules.skylight.eeprom_config.AlarmEntry",
           "hour": 7,
           "dow_list": [
             0,
             6
           ],
           "data": {
-            "delay": 0.0,
-            "name": "Sunrise",
-            "duration": 120.0,
             "__classtype__": "py_modules.skylight.eeprom_config.trans_Fade",
+            "delay": 0.0,
+            "duration": 120.0,
             "color": {
-              "r": 1.0,
-              "b": 1.0,
               "__classtype__": "py_modules.skylight.colors.Color_rgb",
-              "g": 1.0
-            }
-          }
+              "b": 1.0,
+              "g": 1.0,
+              "r": 1.0
+            },
+            "name": "Sunrise"
+          },
+          "__classtype__": "py_modules.skylight.eeprom_config.AlarmEntry",
+          "minute": 30
         },
         {
-          "minute": 0,
           "name": "Off - Weekday",
-          "__classtype__": "py_modules.skylight.eeprom_config.AlarmEntry",
           "hour": 8,
           "dow_list": [
             1,
@@ -178,50 +62,51 @@
             5
           ],
           "data": {
-            "delay": 0.0,
-            "name": "Off",
-            "duration": 1.5,
             "__classtype__": "py_modules.skylight.eeprom_config.trans_Fade",
+            "delay": 0.0,
+            "duration": 1.5,
             "color": {
-              "r": 0.0,
-              "b": 0.0,
               "__classtype__": "py_modules.skylight.colors.Color_rgb",
-              "g": 0.0
-            }
-          }
+              "b": 0.0,
+              "g": 0.0,
+              "r": 0.0
+            },
+            "name": "Off"
+          },
+          "__classtype__": "py_modules.skylight.eeprom_config.AlarmEntry",
+          "minute": 0
         },
         {
-          "minute": 0,
           "name": "Off - Weekend",
-          "__classtype__": "py_modules.skylight.eeprom_config.AlarmEntry",
           "hour": 9,
           "dow_list": [
             0,
             6
           ],
           "data": {
-            "delay": 0.0,
-            "name": "Off",
-            "duration": 1.5,
             "__classtype__": "py_modules.skylight.eeprom_config.trans_Fade",
+            "delay": 0.0,
+            "duration": 1.5,
             "color": {
-              "r": 0.0,
-              "b": 0.0,
               "__classtype__": "py_modules.skylight.colors.Color_rgb",
-              "g": 0.0
-            }
-          }
+              "b": 0.0,
+              "g": 0.0,
+              "r": 0.0
+            },
+            "name": "Off"
+          },
+          "__classtype__": "py_modules.skylight.eeprom_config.AlarmEntry",
+          "minute": 0
         }
       ],
-      "__classtype__": "py_modules.skylight.eeprom_config.AlarmTable"
+      "name": ""
     },
+    "__classtype__": "py_modules.skylight.eeprom_config.eeConfig",
     "modeset_change_table": {
-      "name": "",
+      "__classtype__": "py_modules.skylight.eeprom_config.AlarmTable",
       "alarms": [
         {
-          "minute": 0,
           "name": "Nightlight",
-          "__classtype__": "py_modules.skylight.eeprom_config.AlarmEntry",
           "hour": 22,
           "dow_list": [
             0,
@@ -233,68 +118,68 @@
             6
           ],
           "data": {
-            "name": "",
             "__classtype__": "py_modules.skylight.eeprom_config.ModeSet",
             "modes": [
               [
                 {
-                  "delay": 0.0,
-                  "name": "Nightlight On",
-                  "duration": 1.5,
                   "__classtype__": "py_modules.skylight.eeprom_config.trans_Fade",
+                  "delay": 0.0,
+                  "duration": 1.5,
                   "color": {
-                    "r": 0.6941176470588235,
-                    "b": 0.12941176470588237,
                     "__classtype__": "py_modules.skylight.colors.Color_rgb",
-                    "g": 0.2235294117647059
-                  }
+                    "b": 0.12941176470588237,
+                    "g": 0.2235294117647059,
+                    "r": 0.6941176470588235
+                  },
+                  "name": "Nightlight On"
                 },
                 {
-                  "delay": 15.0,
-                  "name": "Nightlight Off",
-                  "duration": 15.0,
                   "__classtype__": "py_modules.skylight.eeprom_config.trans_Fade",
+                  "delay": 15.0,
+                  "duration": 15.0,
                   "color": {
-                    "r": 0.0,
-                    "b": 0.0,
                     "__classtype__": "py_modules.skylight.colors.Color_rgb",
-                    "g": 0.0
-                  }
+                    "b": 0.0,
+                    "g": 0.0,
+                    "r": 0.0
+                  },
+                  "name": "Nightlight Off"
                 }
               ],
               [
                 {
-                  "delay": 0.0,
-                  "name": "White On",
-                  "duration": 1.5,
                   "__classtype__": "py_modules.skylight.eeprom_config.trans_Fade",
+                  "delay": 0.0,
+                  "duration": 1.5,
                   "color": {
-                    "r": 1.0,
-                    "b": 1.0,
                     "__classtype__": "py_modules.skylight.colors.Color_rgb",
-                    "g": 1.0
-                  }
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                  },
+                  "name": "White On"
                 },
                 {
-                  "delay": 0.0,
-                  "name": "Off",
-                  "duration": 1.5,
                   "__classtype__": "py_modules.skylight.eeprom_config.trans_Fade",
+                  "delay": 0.0,
+                  "duration": 1.5,
                   "color": {
-                    "r": 0.0,
-                    "b": 0.0,
                     "__classtype__": "py_modules.skylight.colors.Color_rgb",
-                    "g": 0.0
-                  }
+                    "b": 0.0,
+                    "g": 0.0,
+                    "r": 0.0
+                  },
+                  "name": "Off"
                 }
               ]
-            ]
-          }
+            ],
+            "name": ""
+          },
+          "__classtype__": "py_modules.skylight.eeprom_config.AlarmEntry",
+          "minute": 0
         },
         {
-          "minute": 0,
           "name": "Normal",
-          "__classtype__": "py_modules.skylight.eeprom_config.AlarmEntry",
           "hour": 7,
           "dow_list": [
             0,
@@ -306,40 +191,155 @@
             6
           ],
           "data": {
-            "name": "",
             "__classtype__": "py_modules.skylight.eeprom_config.ModeSet",
             "modes": [
               [
                 {
-                  "delay": 0.0,
-                  "name": "Normal On",
                   "__classtype__": "py_modules.skylight.eeprom_config.trans_Immediate",
+                  "delay": 0.0,
                   "color": {
-                    "r": 1.0,
-                    "b": 1.0,
                     "__classtype__": "py_modules.skylight.colors.Color_rgb",
-                    "g": 1.0
-                  }
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                  },
+                  "name": "Normal On"
                 },
                 {
-                  "delay": 0.0,
-                  "name": "Normal Off",
                   "__classtype__": "py_modules.skylight.eeprom_config.trans_Immediate",
+                  "delay": 0.0,
                   "color": {
-                    "r": 0.0,
-                    "b": 0.0,
                     "__classtype__": "py_modules.skylight.colors.Color_rgb",
-                    "g": 0.0
-                  }
+                    "b": 0.0,
+                    "g": 0.0,
+                    "r": 0.0
+                  },
+                  "name": "Normal Off"
                 }
               ]
-            ]
-          }
+            ],
+            "name": ""
+          },
+          "__classtype__": "py_modules.skylight.eeprom_config.AlarmEntry",
+          "minute": 0
         }
       ],
-      "__classtype__": "py_modules.skylight.eeprom_config.AlarmTable"
+      "name": ""
     },
-    "__classtype__": "py_modules.skylight.eeprom_config.eeConfig"
+    "default_modeset": {
+      "__classtype__": "py_modules.skylight.eeprom_config.ModeSet",
+      "modes": [
+        [
+          {
+            "__classtype__": "py_modules.skylight.eeprom_config.trans_Immediate",
+            "delay": 0.0,
+            "color": {
+              "__classtype__": "py_modules.skylight.colors.Color_raw",
+              "b": 0,
+              "r": 0,
+              "g": 0,
+              "w": 65535
+            },
+            "name": ""
+          },
+          {
+            "__classtype__": "py_modules.skylight.eeprom_config.trans_Immediate",
+            "delay": 0.0,
+            "color": {
+              "__classtype__": "py_modules.skylight.colors.Color_rgb",
+              "b": 0.0,
+              "g": 0.0,
+              "r": 0.0
+            },
+            "name": ""
+          }
+        ]
+      ],
+      "name": ""
+    }
   },
-  "__classtype__": "__main__.skylight_settings"
+  "t_list": [
+    {
+      "__classtype__": "py_modules.skylight.eeprom_config.trans_Fade",
+      "delay": 0.0,
+      "duration": 120.0,
+      "color": {
+        "__classtype__": "py_modules.skylight.colors.Color_rgb",
+        "b": 1.0,
+        "g": 1.0,
+        "r": 1.0
+      },
+      "name": "Sunrise"
+    },
+    {
+      "__classtype__": "py_modules.skylight.eeprom_config.trans_Immediate",
+      "delay": 0.0,
+      "color": {
+        "__classtype__": "py_modules.skylight.colors.Color_rgb",
+        "b": 1.0,
+        "g": 1.0,
+        "r": 1.0
+      },
+      "name": "Normal On"
+    },
+    {
+      "__classtype__": "py_modules.skylight.eeprom_config.trans_Immediate",
+      "delay": 0.0,
+      "color": {
+        "__classtype__": "py_modules.skylight.colors.Color_rgb",
+        "b": 0.0,
+        "g": 0.0,
+        "r": 0.0
+      },
+      "name": "Normal Off"
+    },
+    {
+      "__classtype__": "py_modules.skylight.eeprom_config.trans_Fade",
+      "delay": 0.0,
+      "duration": 1.5,
+      "color": {
+        "__classtype__": "py_modules.skylight.colors.Color_rgb",
+        "b": 0.12941176470588237,
+        "g": 0.2235294117647059,
+        "r": 0.6941176470588235
+      },
+      "name": "Nightlight On"
+    },
+    {
+      "__classtype__": "py_modules.skylight.eeprom_config.trans_Fade",
+      "delay": 0.0,
+      "duration": 1.5,
+      "color": {
+        "__classtype__": "py_modules.skylight.colors.Color_rgb",
+        "b": 1.0,
+        "g": 1.0,
+        "r": 1.0
+      },
+      "name": "White On"
+    },
+    {
+      "__classtype__": "py_modules.skylight.eeprom_config.trans_Fade",
+      "delay": 0.0,
+      "duration": 1.5,
+      "color": {
+        "__classtype__": "py_modules.skylight.colors.Color_rgb",
+        "b": 0.0,
+        "g": 0.0,
+        "r": 0.0
+      },
+      "name": "Off"
+    },
+    {
+      "__classtype__": "py_modules.skylight.eeprom_config.trans_Fade",
+      "delay": 15.0,
+      "duration": 15.0,
+      "color": {
+        "__classtype__": "py_modules.skylight.colors.Color_rgb",
+        "b": 0.0,
+        "g": 0.0,
+        "r": 0.0
+      },
+      "name": "Nightlight Off"
+    }
+  ]
 }

@@ -34,7 +34,12 @@ class btLink:
         except CMDError:
             # ignore.
             pass
-        self.cmd("echo 0\r\n")
+        
+        try:
+            self.cmd("echo 0\r\n")
+        except CMDError:
+            # ignore.
+            pass
     
     #-----------------------------------------------------------------------------------------------
     def close(self):
