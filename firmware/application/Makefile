@@ -21,6 +21,7 @@ SRC+= eeprom_config.c
 SRC+= debug.c
 SRC+= light_switch.c
 SRC+= led_transitions.c
+SRC+= veml6040.c
 
 COMMON_SRC:= bt_rn42.c
 COMMON_SRC+= atxmega_modules/src/fifo.c
@@ -30,6 +31,7 @@ COMMON_SRC+= atxmega_modules/src/event_queue.c
 COMMON_SRC+= atxmega_modules/src/rtc.c
 COMMON_SRC+= atxmega_modules/src/string_ext.c
 COMMON_SRC+= atxmega_modules/src/uart_io_ext.c
+COMMON_SRC+= atxmega_modules/src/i2c.c
 
 ####################################################################################################
 

@@ -18,6 +18,7 @@
 #include "debug.h"
 #include "eeprom_config.h"
 #include "light_switch.h"
+#include "veml6040.h"
 
 void start_error_led(uint8_t err_no);
 
@@ -33,6 +34,7 @@ int main(void){
     eecfg_init();
     light_switch_init();
     transition_init();
+    veml6040_init();
     
     // Enable interrupts
     PMIC.CTRL = PMIC_HILVLEN_bm | PMIC_MEDLVLEN_bm | PMIC_LOLVLEN_bm;

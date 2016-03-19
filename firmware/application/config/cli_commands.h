@@ -22,6 +22,7 @@
                     {"cfg_read"   , cmd_cfg_read   },\
                     {"cfg_reload" , cmd_cfg_reload },\
                     {"cfg_write"  , cmd_cfg_write  },\
+                    {"chroma"     , cmd_chroma    },\
                     {"echo"       , cmd_echo       },\
                     {"get_time"   , cmd_get_time   },\
                     {"id"         , cmd_id         },\
@@ -57,6 +58,8 @@ int cmd_cfg_erase(uint8_t argc, char *argv[]);
 int cmd_cfg_write(uint8_t argc, char *argv[]);
 int cmd_cfg_read(uint8_t argc, char *argv[]);
 int cmd_cfg_reload(uint8_t argc, char *argv[]);
+
+int cmd_chroma(uint8_t argc, char *argv[]);
 
 int cmd_xxx(uint8_t argc, char *argv[]);
 #endif

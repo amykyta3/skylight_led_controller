@@ -16,6 +16,7 @@
 #include "led_pwm.h"
 #include "debug.h"
 #include "eeprom_config.h"
+#include "veml6040.h"
 
 //==================================================================================================
 static uint16_t xtou16(char *s){
@@ -228,6 +229,30 @@ int cmd_cfg_read(uint8_t argc, char *argv[]){
     for(uint8_t i=0; i<EEPROM_PAGE_SIZE; i++){
         uart_put_x8(data[i]);
     }
+    
+    return(0);
+}
+
+//--------------------------------------------------------------------------------------------------
+int cmd_chroma(uint8_t argc, char *argv[]){
+    uint8_t sampletime;
+    veml6040_sample_t res;
+    
+    if(argc != 2) return(1);
+    sampletime = xtou16(argv[1]);
+    if(sampletime > 5) return(1);
+    sampletime <<= 4;
+    
+    if(veml6040_sample(sampletime, &res)) return(1);
+    
+    uart_put_x16(res.r);
+    uart_putc(' ');
+    uart_put_x16(res.g);
+    uart_putc(' ');
+    uart_put_x16(res.b);
+    uart_putc(' ');
+    uart_put_x16(res.w);
+    uart_putc(' ');
     
     return(0);
 }
