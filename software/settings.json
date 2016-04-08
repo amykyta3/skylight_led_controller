@@ -127,9 +127,9 @@
                   "duration": 1.5,
                   "color": {
                     "__classtype__": "py_modules.skylight.colors.Color_rgb",
-                    "b": 0.12941176470588237,
-                    "g": 0.2235294117647059,
-                    "r": 0.6941176470588235
+                    "b": 0.203921569,
+                    "g": 0.282352941,
+                    "r": 0.549019608
                   },
                   "name": "Nightlight On"
                 },
@@ -299,9 +299,9 @@
       "duration": 1.5,
       "color": {
         "__classtype__": "py_modules.skylight.colors.Color_rgb",
-        "b": 0.12941176470588237,
-        "g": 0.2235294117647059,
-        "r": 0.6941176470588235
+        "b": 0.203921569,
+        "g": 0.282352941,
+        "r": 0.549019608
       },
       "name": "Nightlight On"
     },
