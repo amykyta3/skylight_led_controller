@@ -11,13 +11,13 @@ MAPPED_EEPROM_START = 0x1000
 TICKS_PER_SECOND = 64
 
 #===================================================================================================
-class cfgObject(class_codec.encodable_class):
+class cfgObject(class_codec.EncodableClass):
     """
     Base class for any object in the configuration EEPROM
     that is referenced indirectly via pointer.
     """
     
-    _encode_schema = {
+    encode_schema = {
         "name": str
     }
     
@@ -75,7 +75,7 @@ class Transition(cfgObject):
     """
     ID = None
     
-    _encode_schema = {
+    encode_schema = {
         "delay":float
     }
     
@@ -112,7 +112,7 @@ class Transition(cfgObject):
 class trans_Immediate(Transition):
     ID = 0
     
-    _encode_schema = {
+    encode_schema = {
         "color": colors.Color
     }
     
@@ -152,7 +152,7 @@ class trans_Immediate(Transition):
 class trans_Fade(Transition):
     ID = 1
     
-    _encode_schema = {
+    encode_schema = {
         "color": colors.Color,
         "duration":float
     }
@@ -204,7 +204,7 @@ class trans_Fade(Transition):
 #---------------------------------------------------------------------------------------------------
 class ColorList(cfgObject):
     
-    _encode_schema = {
+    encode_schema = {
         "colors":[colors.Color]
     }
     
@@ -249,7 +249,7 @@ class ColorList(cfgObject):
 class trans_Waveform(Transition):
     ID = 2
     
-    _encode_schema = {
+    encode_schema = {
         "waveform":ColorList,
         "duration":float
     }
@@ -312,7 +312,7 @@ class trans_Waveform(Transition):
 #===================================================================================================
 class ModeSet(cfgObject):
     
-    _encode_schema = {
+    encode_schema = {
         "modes":[(Transition,Transition)]
     }
     
@@ -373,9 +373,9 @@ class ModeSet(cfgObject):
 # Alarm Tables
 #===================================================================================================
 
-class AlarmEntry(class_codec.encodable_class):
+class AlarmEntry(class_codec.EncodableClass):
     
-    _encode_schema = {
+    encode_schema = {
         "name":str,
         "dow_list":[int],
         "hour":int,
@@ -448,7 +448,7 @@ class AlarmEntry(class_codec.encodable_class):
 #---------------------------------------------------------------------------------------------------
 class AlarmTable(cfgObject):
     
-    _encode_schema = {
+    encode_schema = {
         "alarms":[AlarmEntry]
     }
     
@@ -503,9 +503,9 @@ class AlarmTable(cfgObject):
         return(True)
         
 #===================================================================================================
-class eeConfig(class_codec.encodable_class):
+class eeConfig(class_codec.EncodableClass):
     
-    _encode_schema = {
+    encode_schema = {
         "default_modeset":ModeSet,
         "lighting_alarm_table":AlarmTable,
         "modeset_change_table":AlarmTable

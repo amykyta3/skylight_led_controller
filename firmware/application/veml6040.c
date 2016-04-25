@@ -86,6 +86,7 @@ void veml6040_read_result(veml6040_sample_t *result){
 
 int veml6040_sample(uint8_t integ_time, veml6040_sample_t *result){
     int res;
+    
     res = veml6040_start_sample(integ_time);
     if(res) return(res);
     

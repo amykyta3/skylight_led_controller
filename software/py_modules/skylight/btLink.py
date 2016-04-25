@@ -173,3 +173,74 @@ class btLink:
         
         self.cmd("cfg_reload\r\n")
     
+    #-----------------------------------------------------------------------------------------------
+    def sample_chroma(self, T_i):
+        """
+        Takes a single color sample from the VEML6040 sensor.
+        """
+        resp = self.cmd("chroma %X\r\n" % T_i)
+        resp = resp.split()
+        for i,v in enumerate(resp):
+            resp[i] = int(v,16)
+        return(resp)
+        
+    def measure_chroma(self, n_average = 1):
+        """
+        Takes a color measurement from the VEML6040 sensor using the best possible integration time
+         1. Takes several samples to determine ideal integration time for maximum resolution
+         2. Takes additional samples as necessary to get an average
+        """
+        
+        # Determine best T_i
+        T_i = 3
+        retry_count = 3
+        while(retry_count > 0):
+            sample = self.sample_chroma(T_i)
+            print(sample)
+            print("Sampled at T_i=%d, Max=0x%04X" % (T_i, max(sample)))
+            
+            T_i_prev = T_i
+            
+            if(max(sample) > (0x10000*0.90)):
+                # T_i is too long for the brightness
+                if(T_i == 0):
+                    # T_i is already at the lowest setting.
+                    break
+                
+                T_i -= 1
+            elif(max(sample) < (0x8000*0.90)):
+                # Could use a longer T_i
+                if(T_i == 5):
+                    # T_i is already at the highest setting.
+                    break
+                
+                T_i += 1
+            else:
+                # Sample is within decent range
+                break
+                
+            retry_count -= 1
+            
+            # VEML6040 seems to need some time between switching integration times
+            time.sleep(0.040 * (2**T_i_prev))
+        
+        # Do additional samples to average
+        extra_samples = n_average-1
+        sample_list = [sample]
+        while(extra_samples > 0):
+            sample_list.append(self.sample_chroma(T_i))
+            extra_samples -= 1
+        
+        # Post process samples
+        # - Take average
+        # - Normalize scale based on T_i used
+        result = [0,0,0,0]
+        for s in sample_list:
+            for i,c in enumerate(s):
+                result[i] += c
+        for i,c in enumerate(result):
+            c *= 2**(5-T_i)
+            result[i] = c/n_average
+            
+        return(result)
+        

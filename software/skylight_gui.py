@@ -129,8 +129,8 @@ class skylight_gui(App):
             
 
 #---------------------------------------------------------------------------------------------------
-class skylight_settings(class_codec.encodable_class):
-    _encode_schema = {
+class skylight_settings(class_codec.EncodableClass):
+    encode_schema = {
         "cfg": skylight.eeConfig,
         "t_list": [skylight.eeprom_config.Transition]
     }
@@ -153,7 +153,7 @@ class skylight_settings(class_codec.encodable_class):
     def save_json(self, filename):
         D = self.to_dict()
         with open(filename, 'w') as f:
-            json.dump(D, f, indent=2)
+            json.dump(D, f, indent=2, sort_keys = True)
 
 ####################################################################################################
 if __name__ == '__main__':

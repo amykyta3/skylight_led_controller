@@ -1,9 +1,9 @@
 
 from ..python_modules import class_codec
 
-class Color(class_codec.encodable_class):
+class Color(class_codec.EncodableClass):
     
-    _encode_schema = {}
+    encode_schema = {}
     
     def get_rgbw(self):
         """
@@ -21,7 +21,7 @@ class Color(class_codec.encodable_class):
         return(True)
         
 class Color_raw(Color):
-    _encode_schema = {
+    encode_schema = {
         "r":int,
         "g":int,
         "b":int,
@@ -63,7 +63,7 @@ class Color_raw(Color):
         return(True)
         
 class Color_rgb(Color):
-    _encode_schema = {
+    encode_schema = {
         "r":float,
         "g":float,
         "b":float
