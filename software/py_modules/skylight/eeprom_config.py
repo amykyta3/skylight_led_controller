@@ -1,6 +1,6 @@
 
 import struct
-from ..python_modules import class_codec
+from ..python_modules import encodable_class as ec
 from . import colors
 
 #===================================================================================================
@@ -11,7 +11,7 @@ MAPPED_EEPROM_START = 0x1000
 TICKS_PER_SECOND = 64
 
 #===================================================================================================
-class cfgObject(class_codec.EncodableClass):
+class cfgObject(ec.EncodableClass):
     """
     Base class for any object in the configuration EEPROM
     that is referenced indirectly via pointer.
@@ -373,7 +373,7 @@ class ModeSet(cfgObject):
 # Alarm Tables
 #===================================================================================================
 
-class AlarmEntry(class_codec.EncodableClass):
+class AlarmEntry(ec.EncodableClass):
     
     encode_schema = {
         "name":str,
@@ -503,7 +503,7 @@ class AlarmTable(cfgObject):
         return(True)
         
 #===================================================================================================
-class eeConfig(class_codec.EncodableClass):
+class eeConfig(ec.EncodableClass):
     
     encode_schema = {
         "default_modeset":ModeSet,

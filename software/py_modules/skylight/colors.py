@@ -1,7 +1,7 @@
 
-from ..python_modules import class_codec
+from ..python_modules import encodable_class as ec
 
-class Color(class_codec.EncodableClass):
+class Color(ec.EncodableClass):
     
     encode_schema = {}
     

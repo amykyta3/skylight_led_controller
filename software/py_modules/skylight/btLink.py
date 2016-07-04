@@ -1,5 +1,13 @@
 
-import serial
+import sys
+
+try:
+    import serial
+except ImportError:
+    print("Missing 3rd party package 'pyserial'. Install using:")
+    print("  sudo pip3 install pyserial")
+    sys.exit(1)
+
 import logging
 import time
 import binascii

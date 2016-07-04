@@ -11,7 +11,7 @@ from tkinter import ttk
 from tkinter import colorchooser
 
 from py_modules.python_modules.app import App
-import py_modules.python_modules.class_codec as class_codec
+import py_modules.python_modules.encodable_class as ec
 
 import py_modules.skylight as skylight
 
@@ -129,7 +129,7 @@ class skylight_gui(App):
             
 
 #---------------------------------------------------------------------------------------------------
-class skylight_settings(class_codec.EncodableClass):
+class skylight_settings(ec.EncodableClass):
     encode_schema = {
         "cfg": skylight.eeConfig,
         "t_list": [skylight.eeprom_config.Transition]
