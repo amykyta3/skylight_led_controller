@@ -1,0 +1,6 @@
+
+Bluetooth issues:
+	Still having problems connecting to BT in Linux.
+	Some partial remedies:
+		sudo usermod -a -G dialout <user>
+		sudo systemctl disable ModemManager
