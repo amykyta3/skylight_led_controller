@@ -5,20 +5,19 @@ from tkinter import messagebox
 
 from ..python_modules import tk_extensions as tkext
 from . import eeprom_config as eecfg
+from . import settings
 
 #---------------------------------------------------------------------------------------------------
 class EditLightingAlarm(tkext.Dialog):
-    def __init__(self, parent, LA, LA_list = [], T_list = []):
+    def __init__(self, parent, LA, LA_list = []):
         """
         LA: Lighting Alarm to edit
-        T_list: List of other existing transitions
         """
         self.LA = LA
         self.LA_list = LA_list
-        self.T_list = T_list
         
         self.T_names = []
-        for T in self.T_list:
+        for T in settings.S_DATA.t_list:
             name = "%s::%s" % (type(T).__name__, T.name)
             self.T_names.append(name)
         
@@ -93,7 +92,7 @@ class EditLightingAlarm(tkext.Dialog):
             if(i in self.LA.dow_list):
                 v.set(1)
         
-        for i,v in enumerate(self.T_list):
+        for i,v in enumerate(settings.S_DATA.t_list):
             print(v)
             if(self.LA.data == v):
                 self.combo_transition.current(i)
@@ -179,12 +178,10 @@ class EditLightingAlarm(tkext.Dialog):
                self.LA.dow_list.append(i)
         
         i = self.combo_transition.current()
-        self.LA.data = self.T_list[i]
+        self.LA.data = settings.S_DATA.t_list[i]
         
 class EditLightingAlarmList(tkext.ListEdit):
-    def __init__(self, parent, LA_list = [], T_list = []):
-        
-        self.T_list = T_list
+    def __init__(self, parent, LA_list = []):
         
         tkext.ListEdit.__init__(self, parent = parent, title = "Edit Lighting Alarms", item_list = LA_list)
         
@@ -197,14 +194,14 @@ class EditLightingAlarmList(tkext.ListEdit):
         LA.name = "New Alarm"
         
         # Open edit dialog
-        dlg = EditLightingAlarm(self.tkWindow, LA, self.item_list, self.T_list)
+        dlg = EditLightingAlarm(self.tkWindow, LA, self.item_list)
         if(dlg.result):
             return(dlg.LA)
         else:
             return(None)
     
     def edit_item(self, I):
-        dlg = EditLightingAlarm(self.tkWindow, I, self.item_list, self.T_list)
+        dlg = EditLightingAlarm(self.tkWindow, I, self.item_list)
         if(dlg.result):
             return(dlg.LA)
         else:

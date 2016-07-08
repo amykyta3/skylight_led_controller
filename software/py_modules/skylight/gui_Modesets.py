@@ -5,15 +5,15 @@ from tkinter import messagebox
 
 from ..python_modules import tk_extensions as tkext
 from . import eeprom_config as eecfg
+from . import settings
 
 #---------------------------------------------------------------------------------------------------
 class EditModePair(tkext.Dialog):
-    def __init__(self, parent, M, T_list = []):
+    def __init__(self, parent, M):
         self.M = M
-        self.T_list = T_list
         
         self.T_names = []
-        for T in self.T_list:
+        for T in settings.S_DATA.t_list:
             name = "%s::%s" % (type(T).__name__, T.name)
             self.T_names.append(name)
         
@@ -49,12 +49,12 @@ class EditModePair(tkext.Dialog):
     #---------------------------------------------------------------
     def dlg_initialize(self):
         if(self.M):
-            for i,v in enumerate(self.T_list):
+            for i,v in enumerate(settings.S_DATA.t_list):
                 if(self.M[0] is v):
                     self.cmb_on_transition.current(i)
                     break
             
-            for i,v in enumerate(self.T_list):
+            for i,v in enumerate(settings.S_DATA.t_list):
                 if(self.M[1] is v):
                     self.cmb_off_transition.current(i)
                     break
@@ -85,15 +85,14 @@ class EditModePair(tkext.Dialog):
     def dlg_apply(self):
         i_on = self.cmb_on_transition.current()
         i_off = self.cmb_off_transition.current()
-        self.M = (self.T_list[i_on], self.T_list[i_off])
+        self.M = (settings.S_DATA.t_list[i_on], settings.S_DATA.t_list[i_off])
         
 #---------------------------------------------------------------------------------------------------
 class EditModesetAlarm(tkext.ListEdit):
-    def __init__(self, parent, MA, MA_list = [], T_list = []):
+    def __init__(self, parent, MA, MA_list = []):
         
         self.MA = MA
         self.MA_list = MA_list
-        self.T_list = T_list
         
         tkext.ListEdit.__init__(self, parent = parent, title = "Edit Modeset Alarm", item_list = MA.data.modes.copy())
         
@@ -107,14 +106,14 @@ class EditModesetAlarm(tkext.ListEdit):
         # Create new mode pair
         
         # Open edit dialog
-        dlg = EditModePair(self.tkWindow, None, self.T_list)
+        dlg = EditModePair(self.tkWindow, None)
         if(dlg.result):
             return(dlg.M)
         else:
             return(None)
     
     def edit_item(self, I):
-        dlg = EditModePair(self.tkWindow, I, self.T_list)
+        dlg = EditModePair(self.tkWindow, I)
         if(dlg.result):
             return(dlg.M)
         else:
@@ -292,9 +291,7 @@ class EditModesetAlarm(tkext.ListEdit):
         
 #---------------------------------------------------------------------------------------------------
 class EditModesetAlarmList(tkext.ListEdit):
-    def __init__(self, parent, MA_list = [], T_list = []):
-        
-        self.T_list = T_list
+    def __init__(self, parent, MA_list = []):
         
         tkext.ListEdit.__init__(self, parent = parent, title = "Edit Modeset Alarms", item_list = MA_list)
         
@@ -308,14 +305,14 @@ class EditModesetAlarmList(tkext.ListEdit):
         MA.data = eecfg.ModeSet()
         
         # Open edit dialog
-        dlg = EditModesetAlarm(self.tkWindow, MA, self.item_list, self.T_list)
+        dlg = EditModesetAlarm(self.tkWindow, MA, self.item_list)
         if(dlg.result):
             return(dlg.MA)
         else:
             return(None)
     
     def edit_item(self, I):
-        dlg = EditModesetAlarm(self.tkWindow, I, self.item_list, self.T_list)
+        dlg = EditModesetAlarm(self.tkWindow, I, self.item_list)
         if(dlg.result):
             return(dlg.MA)
         else:

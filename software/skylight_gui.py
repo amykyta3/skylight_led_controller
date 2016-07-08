@@ -99,15 +99,13 @@ class skylight_gui(App):
     def pb_edit_modeset_alarms(self):
         dlg = EditModesetAlarmList(
             self.fr,
-            settings.S_DATA.cfg.modeset_change_table.alarms,
-            settings.S_DATA.t_list
+            settings.S_DATA.cfg.modeset_change_table.alarms
         )
         
     def pb_edit_lighting_alarms(self):
         dlg = EditLightingAlarmList(
             self.fr,
-            settings.S_DATA.cfg.lighting_alarm_table.alarms,
-            settings.S_DATA.t_list
+            settings.S_DATA.cfg.lighting_alarm_table.alarms
         )
         
     def pb_send_cfg(self):
