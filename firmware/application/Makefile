@@ -38,7 +38,7 @@ COMMON_SRC+= atxmega_modules/src/i2c.c
 all:$(EXECUTABLE).hex
 
 program:$(EXECUTABLE).hex
-	../../software/firmware_loader.py -p /dev/rfcomm0 $<
+	../../software/firmware_loader.py $<
 	
 dump_flash:
 	avrdude -p x128d4 -c avrispmkII -U flash:r:flash.hex:i

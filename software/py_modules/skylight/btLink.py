@@ -1,11 +1,12 @@
 
 import sys
+import re
 
 try:
-    import serial
+    import bluetooth
 except ImportError:
-    print("Missing 3rd party package 'pyserial'. Install using:")
-    print("  sudo pip3 install pyserial")
+    print("Missing 3rd party package 'pybluez'. Install using:")
+    print("  sudo pip3 install pybluez")
     sys.exit(1)
 
 import logging
@@ -16,11 +17,10 @@ class CMDError(Exception):
     pass
 
 class btLink:
-    def __init__(self, port, timeout = 10):
-        self.S = serial.Serial()
-        self.S.port = port
-        self.S.timeout = timeout
-        self.S.baudrate = 115200
+    def __init__(self, addr, timeout = 10):
+        self.S = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+        self.timeout = timeout
+        self.addr = addr
         self.log = logging.getLogger("skylight")
         
     #-----------------------------------------------------------------------------------------------
@@ -34,7 +34,8 @@ class btLink:
     
     #-----------------------------------------------------------------------------------------------
     def open(self):
-        self.S.open()
+        self.S.connect((self.addr, 1))
+        self.S.settimeout(self.timeout)
         
         # flush out any partial commands
         try:
@@ -65,19 +66,15 @@ class btLink:
         """
         self.log.debug("cmd: %s" % cmd_string.strip())
         cmd_string = cmd_string.encode("ascii")
-        self.S.reset_input_buffer()
-        self.S.write(cmd_string)
+        self.S.send(cmd_string)
         
         # Collect response
         resp = []
         resp_line = ""
         
-        c = self.S.read(1).decode("ascii")
+        c = self.S.recv(1).decode("ascii")
         while(c != '>'):
-            if(c == ''):
-                # Timed out
-                raise TimeoutError("Timed out waiting for a response")
-            elif(c == '\r'):
+            if(c == '\r'):
                 # discard
                 pass
             elif(c == '\n'):
@@ -89,7 +86,7 @@ class btLink:
             else:
                 resp_line += c
             
-            c = self.S.read(1).decode("ascii")
+            c = self.S.recv(1).decode("ascii")
         
         if(len(resp_line) != 0):
             self.log.debug("resp_line: %s" % resp_line)
@@ -251,4 +248,24 @@ class btLink:
             result[i] = c/n_average
             
         return(result)
-        
+    
+#---------------------------------------------------------------------------------------------------
+def discover():
+    """
+    Discovers any BT devices that have a name that matches "SkylightLED-####"
+    Returns list of (address, name) tuples
+    """
+    discovered_devs = bluetooth.discover_devices(
+        duration=8,
+        lookup_names=True,
+        flush_cache=True,
+        lookup_class=False
+    )
+    
+    devs = []
+    for addr, name in discovered_devs:
+        if(re.match(r'SkylightLED-[0-9a-fA-F]{4}', name)):
+            devs.append((addr, name))
+    
+    return(devs)
+    

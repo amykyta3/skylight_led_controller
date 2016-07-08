@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import py_modules.python_modules.tk_extensions as tkext
-tkext.ExceptionHandler.install()
+#tkext.ExceptionHandler.install()
 
 import os
 import sys
@@ -12,14 +12,14 @@ from tkinter import ttk
 from py_modules.python_modules.app import App
 import py_modules.python_modules.encodable_class as ec
 
-import py_modules.skylight as skylight
-
 from py_modules.skylight.gui_Transitions import EditTransitionList
 from py_modules.skylight.gui_LightingAlarms import EditLightingAlarmList
 from py_modules.skylight.gui_Modesets import EditModesetAlarmList
 from py_modules.skylight.gui_Colors import EditColor
 from py_modules.skylight.colors import Color_raw
 import py_modules.skylight.settings as settings
+import py_modules.skylight.btLink as btLink
+import py_modules.skylight.gui_btLink as gui_btLink
 
 #---------------------------------------------------------------------------------------------------
 class skylight_gui(App):
@@ -110,21 +110,24 @@ class skylight_gui(App):
         
     def pb_send_cfg(self):
         image = settings.S_DATA.cfg.compile()
-        with skylight.btLink(settings.S_DATA.bt_dev) as S:
-            S.set_time()
-            S.send_config(image)
+        if(gui_btLink.check_bt_addr()):
+            with btLink.btLink(settings.S_DATA.bt_addr) as S:
+                S.set_time()
+                S.send_config(image)
             
     def pb_sync_datetime(self):
         image = settings.S_DATA.cfg.compile()
-        with skylight.btLink(settings.S_DATA.bt_dev) as S:
-            S.set_time()
+        if(gui_btLink.check_bt_addr()):
+            with btLink.btLink(settings.S_DATA.bt_addr) as S:
+                S.set_time()
             
     def pb_set_color(self):
         dlg = EditColor(self.fr, self.color)
         if(dlg.result):
             self.color = dlg.C
-            with skylight.btLink(settings.S_DATA.bt_dev) as S:
-                S.set_rgbw(self.color)
+            if(gui_btLink.check_bt_addr()):
+                with btLink.btLink(settings.S_DATA.bt_addr) as S:
+                    S.set_rgbw(self.color)
 
 ####################################################################################################
 if __name__ == '__main__':

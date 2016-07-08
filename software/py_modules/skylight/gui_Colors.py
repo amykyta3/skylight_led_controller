@@ -7,6 +7,7 @@ from ..python_modules import tk_extensions as tkext
 from . import eeprom_config as eecfg
 from . import colors
 from . import btLink
+from . import gui_btLink
 from . import settings
 
 #---------------------------------------------------------------------------------------------------
@@ -121,8 +122,9 @@ class EditColor(tkext.Dialog):
             int(self.W_var.get())
         )
         
-        with btLink(settings.S_DATA.bt_dev) as S:
-            S.set_rgbw(C)
+        if(gui_btLink.check_bt_addr()):
+            with btLink.btLink(settings.S_DATA.bt_addr) as S:
+                S.set_rgbw(C)
     
     #---------------------------------------------------------------
     # Standard Action hooks

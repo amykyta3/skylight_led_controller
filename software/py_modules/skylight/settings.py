@@ -9,7 +9,7 @@ class Skylight_Settings(ec.EncodableClass):
     encode_schema = {
         "cfg": eecfg.eeConfig,
         "t_list": [eecfg.Transition],
-        "bt_dev": str
+        "bt_addr": str
     }
     
     def __init__(self):
@@ -20,8 +20,8 @@ class Skylight_Settings(ec.EncodableClass):
         # Pool of available transitions
         self.t_list = []
         
-        # Bluetooth device
-        self.bt_dev = "/dev/rfcomm0"
+        # Bluetooth device address
+        self.bt_addr = None
         
     @classmethod
     def from_json(cls, filename):
