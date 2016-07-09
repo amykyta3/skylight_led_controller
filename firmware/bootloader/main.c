@@ -76,7 +76,7 @@ int main(void){
     // Staying in bootloader.
     
     // Set PMIC to use the bootloader IVEC table
-    PROTECTED_WRITE(PMIC.CTRL, PMIC.CTRL | PMIC_IVSEL_bm);
+    _PROTECTED_WRITE(PMIC.CTRL, PMIC.CTRL | PMIC_IVSEL_bm);
     
     _delay_ms(250);
     
@@ -132,7 +132,7 @@ void start_app(void){
         uart_uninit();
         
         // Set PMIC to use the application IVEC table
-        PROTECTED_WRITE(PMIC.CTRL,PMIC.CTRL & ~PMIC_IVSEL_bm);
+        _PROTECTED_WRITE(PMIC.CTRL,PMIC.CTRL & ~PMIC_IVSEL_bm);
         
         EIND = 0;
         
@@ -157,10 +157,10 @@ static void init_clk(void){
     DFLLRC32M.CTRL = DFLL_ENABLE_bm;
     
     // Select 32M Osc as sys clk
-    PROTECTED_WRITE(CLK.CTRL, CLK_SCLKSEL_RC32M_gc);
+    _PROTECTED_WRITE(CLK.CTRL, CLK_SCLKSEL_RC32M_gc);
     
     // Disable any prescaling
-    PROTECTED_WRITE(CLK.PSCTRL, 0x00);
+    _PROTECTED_WRITE(CLK.PSCTRL, 0x00);
     
     // Disable unused oscillators
     OSC.CTRL &= ~(OSC_PLLEN_bm | OSC_RC32KEN_bm | OSC_RC2MEN_bm);

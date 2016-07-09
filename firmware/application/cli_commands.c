@@ -102,7 +102,7 @@ int cmd_reset(uint8_t argc, char *argv[]){
     cli();
     
     // Reset
-    PROTECTED_WRITE(RST.CTRL, RST_SWRST_bm);
+    _PROTECTED_WRITE(RST.CTRL, RST_SWRST_bm);
     return(0);
 }
 
