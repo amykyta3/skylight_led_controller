@@ -506,12 +506,21 @@ class AlarmTable(cfgObject):
 class eeConfig(ec.EncodableClass):
     
     encode_schema = {
+        "clock_correction_interval":int,
         "default_modeset":ModeSet,
         "lighting_alarm_table":AlarmTable,
         "modeset_change_table":AlarmTable
     }
     
     def __init__(self):
+        
+        """
+        Number of minutes between correction events.
+            interval > 0: Correct for slow clock
+            interval < 0: Correct for fast clock
+            interval == 0: Disable correction
+        """
+        self.clock_correction_interval = 0
         
         """
         Handle to default ModeSet
@@ -538,13 +547,15 @@ class eeConfig(ec.EncodableClass):
     def to_binary(self, dummy = False):
         
         # uint32_t timestamp
+        # int32_t clock_correction_interval
         # uintptr_t default_modeset
         # uintptr_t lighting_alarm_table
         # uintptr_t modeset_change_table
         if(dummy):
-            b = struct.pack("<IHHH", 0, 0, 0, 0)
+            b = struct.pack("<IiHHH", 0, 0, 0, 0, 0)
         else:
-            b = struct.pack("<IHHH", 0,
+            b = struct.pack("<IiHHH", 0,
+                                self.clock_correction_interval,
                                 self.default_modeset.ee_address,
                                 self.lighting_alarm_table.ee_address,
                                 self.modeset_change_table.ee_address,

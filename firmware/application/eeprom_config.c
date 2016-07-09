@@ -87,6 +87,8 @@ void eecfg_reload_cfg(void){
     if(eeConfig.timestamp == Build_Timestamp){
         // Configuration is valid. Load!
         
+        calendar_set_correction_interval(eeConfig.clock_correction_interval);
+        
         Cfg.current_modeset = eeConfig.default_modeset;
         
         // Malloc space for alarms
@@ -353,6 +355,10 @@ static void print_modeset_change_table(modeset_change_table_t *o, uint8_t indent
 int eecfg_print_me(void){
     
     if(eeConfig.timestamp == Build_Timestamp){
+        print_newline(0);
+        uart_puts("clock_correction_interval: ");
+        uart_put_x32((uint32_t)eeConfig.clock_correction_interval);
+        
         print_newline(0);
         uart_puts("default_modeset: @");
         uart_put_x16((uint16_t)eeConfig.default_modeset);

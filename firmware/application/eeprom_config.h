@@ -73,6 +73,7 @@ typedef struct {
 
 typedef struct {
     uint32_t timestamp;
+    int32_t clock_correction_interval;
     modeset_t *default_modeset;
     lighting_alarm_table_t *lighting_alarm_table;
     modeset_change_table_t *modeset_change_table;

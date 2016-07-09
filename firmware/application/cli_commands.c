@@ -149,6 +149,43 @@ int cmd_get_time(uint8_t argc, char *argv[]){
 }
 
 //--------------------------------------------------------------------------------------------------
+int cmd_get_ref_time(uint8_t argc, char *argv[]){
+    calendar_time_t T;
+    
+    calendar_get_last_set_timestamp(&T);
+    
+    uart_put_x8(T.dayofweek);
+    uart_putc(' ');
+    
+    uart_put_x16(T.year);
+    uart_putc(' ');
+    
+    uart_put_x8(T.month);
+    uart_putc(' ');
+    
+    uart_put_x8(T.day);
+    uart_putc(' ');
+    
+    uart_put_x8(T.hour);
+    uart_putc(' ');
+    
+    uart_put_x8(T.minute);
+    uart_putc(' ');
+    
+    uart_put_x8(T.second);
+    
+    return(0);
+}
+
+//--------------------------------------------------------------------------------------------------
+int cmd_get_clk_correct(uint8_t argc, char *argv[]){
+    int32_t intvl;
+    intvl = calendar_get_correction_interval();
+    uart_put_x32((uint32_t)intvl);
+    return(0);
+}
+    
+//--------------------------------------------------------------------------------------------------
 void stop_error_led(void);
 
 int cmd_set_time(uint8_t argc, char *argv[]){
@@ -259,6 +296,6 @@ int cmd_chroma(uint8_t argc, char *argv[]){
 
 //--------------------------------------------------------------------------------------------------
 
-int cmd_xxx(uint8_t argc, char *argv[]){
+int cmd_print_cfg(uint8_t argc, char *argv[]){
     return(eecfg_print_me());
 }

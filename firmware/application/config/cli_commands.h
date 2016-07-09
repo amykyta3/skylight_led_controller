@@ -18,19 +18,21 @@
 
 // Table of commands: {"command_word" , function_name }
 // Command words MUST be in alphabetical (ascii) order!! (A-Z then a-z) if using binary search
-#define CMDTABLE    {"cfg_erase"  , cmd_cfg_erase  },\
-                    {"cfg_read"   , cmd_cfg_read   },\
-                    {"cfg_reload" , cmd_cfg_reload },\
-                    {"cfg_write"  , cmd_cfg_write  },\
-                    {"chroma"     , cmd_chroma    },\
-                    {"echo"       , cmd_echo       },\
-                    {"get_time"   , cmd_get_time   },\
-                    {"id"         , cmd_id         },\
-                    {"reset"      , cmd_reset      },\
-                    {"rgbw"       , cmd_rgbw       },\
-                    {"set_dst"    , cmd_set_dst    },\
-                    {"set_time"   , cmd_set_time   },\
-                    {"xxx"        , cmd_xxx        }
+#define CMDTABLE    {"cfg_erase"        , cmd_cfg_erase       },\
+                    {"cfg_read"         , cmd_cfg_read        },\
+                    {"cfg_reload"       , cmd_cfg_reload      },\
+                    {"cfg_write"        , cmd_cfg_write       },\
+                    {"chroma"           , cmd_chroma          },\
+                    {"echo"             , cmd_echo            },\
+                    {"get_clk_correct"  , cmd_get_clk_correct },\
+                    {"get_ref_time"     , cmd_get_ref_time    },\
+                    {"get_time"         , cmd_get_time        },\
+                    {"id"               , cmd_id              },\
+                    {"print_cfg"        , cmd_print_cfg       },\
+                    {"reset"            , cmd_reset           },\
+                    {"rgbw"             , cmd_rgbw            },\
+                    {"set_dst"          , cmd_set_dst         },\
+                    {"set_time"         , cmd_set_time        }
 
 // Custom command function prototypes:
 
@@ -47,6 +49,9 @@ int cmd_rgbw(uint8_t argc, char *argv[]);
 // get_time
 // <DOW> <year> <month> <day> <hour> <minute> <second>
 int cmd_get_time(uint8_t argc, char *argv[]);
+int cmd_get_ref_time(uint8_t argc, char *argv[]);
+
+int cmd_get_clk_correct(uint8_t argc, char *argv[]);
 
 // set_time <year> <month> <day> <hour> <minute> <second>
 int cmd_set_time(uint8_t argc, char *argv[]);
@@ -61,5 +66,5 @@ int cmd_cfg_reload(uint8_t argc, char *argv[]);
 
 int cmd_chroma(uint8_t argc, char *argv[]);
 
-int cmd_xxx(uint8_t argc, char *argv[]);
+int cmd_print_cfg(uint8_t argc, char *argv[]);
 #endif
