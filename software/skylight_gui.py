@@ -16,6 +16,7 @@ from py_modules.skylight.gui_Transitions import EditTransitionList
 from py_modules.skylight.gui_LightingAlarms import EditLightingAlarmList
 from py_modules.skylight.gui_Modesets import EditModesetAlarmList
 from py_modules.skylight.gui_Colors import EditColor
+from py_modules.skylight.gui_Terminal import Terminal
 from py_modules.skylight.colors import Color_raw
 import py_modules.skylight.settings as settings
 import py_modules.skylight.btLink as btLink
@@ -85,6 +86,12 @@ class skylight_gui(App):
             command=self.pb_set_color
         ).pack(fill=tk.X)
         
+        ttk.Button(
+            fr_main,
+            text="Terminal",
+            command=self.pb_terminal
+        ).pack(fill=tk.X)
+        
         self.fr = fr_main
         
         # block until the window exits
@@ -129,6 +136,11 @@ class skylight_gui(App):
                 with btLink.btLink(settings.S_DATA.bt_addr) as S:
                     S.set_rgbw(self.color)
 
+    def pb_terminal(self):
+        if(gui_btLink.check_bt_addr()):
+            with btLink.btLink(settings.S_DATA.bt_addr) as S:
+                Terminal(self.fr, S)
+        
 ####################################################################################################
 if __name__ == '__main__':
     A = skylight_gui()
