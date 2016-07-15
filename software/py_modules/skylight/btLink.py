@@ -11,6 +11,7 @@ except ImportError:
 
 import logging
 import time
+import datetime
 import binascii
 
 class CMDError(Exception):
@@ -166,6 +167,46 @@ class btLink:
         
         self.cmd("set_dst %d %d\r\n" % (time.daylight, now.tm_isdst))
     
+    #-----------------------------------------------------------------------------------------------
+    def get_time(self):
+        resp = self.cmd("get_time\r\n")
+        resp = resp.split()
+        
+        year = int(resp[1], 16)
+        month = int(resp[2], 16)
+        day = int(resp[3], 16)
+        hour = int(resp[4], 16)
+        minute = int(resp[5], 16)
+        second = int(resp[6], 16)
+        T = datetime.datetime(year, month, day, hour, minute, second)
+        return(T)
+        
+    #-----------------------------------------------------------------------------------------------
+    def get_ref_time(self):
+        resp = self.cmd("get_ref_time\r\n")
+        resp = resp.split()
+        
+        year = int(resp[1], 16)
+        month = int(resp[2], 16)
+        day = int(resp[3], 16)
+        hour = int(resp[4], 16)
+        minute = int(resp[5], 16)
+        second = int(resp[6], 16)
+        T = datetime.datetime(year, month, day, hour, minute, second)
+        return(T)
+        
+    #-----------------------------------------------------------------------------------------------
+    def get_clk_correct(self):
+        """
+        Gets the clock correction interval setting
+        """
+        resp = self.cmd("get_clk_correct\r\n")
+        resp = int(resp,16)
+        if(resp > 0x7FFFFFFF):
+            resp -= 0x100000000
+            
+        return(resp)
+        
     #-----------------------------------------------------------------------------------------------
     def set_rgbw(self, color):
         rgbw = color.get_rgbw()

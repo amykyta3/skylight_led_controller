@@ -6,6 +6,7 @@ import py_modules.python_modules.tk_extensions as tkext
 import os
 import sys
 import json
+import datetime
 import tkinter as tk
 from tkinter import ttk
 
@@ -112,6 +113,12 @@ class skylight_gui(App):
             command=self.pb_terminal
         ).pack(fill=tk.X)
         
+        ttk.Button(
+            fr_debug,
+            text="test",
+            command=self.pb_TEST
+        ).pack(fill=tk.X)
+        
         self.fr = fr_main
         
         # block until the window exits
@@ -156,6 +163,23 @@ class skylight_gui(App):
     def pb_terminal(self):
         if(gui_btLink.check_bt_connected()):
             Terminal(self.fr, settings.BT_LINK)
+            
+    def pb_TEST(self):
+        if(gui_btLink.check_bt_connected()):
+            ref_time = settings.BT_LINK.get_ref_time()
+            hw_time = settings.BT_LINK.get_time()
+            actual_time = datetime.datetime.now()
+            
+            print("HW Time    ", hw_time)
+            print("Actual Time", actual_time)
+            print("elapsed", actual_time - ref_time)
+            
+            elapsed = (actual_time - ref_time).total_seconds()
+            delta = (actual_time - hw_time).total_seconds()
+            correction_interval = elapsed / delta
+            print("Correction interval", correction_interval)
+            
+            
                 
     def pb_tgl_connect_click(self):
         
