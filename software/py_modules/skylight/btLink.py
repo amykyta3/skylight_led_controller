@@ -22,6 +22,7 @@ class btLink:
         self.timeout = timeout
         self.addr = addr
         self.log = logging.getLogger("skylight")
+        self.connected = False
         
     #-----------------------------------------------------------------------------------------------
     def __enter__(self):
@@ -49,10 +50,13 @@ class btLink:
         except CMDError:
             # ignore.
             pass
-    
+        
+        self.connected = True
+        
     #-----------------------------------------------------------------------------------------------
     def close(self):
         self.S.close()
+        self.connected = False
     
     #-----------------------------------------------------------------------------------------------
     def cmd(self, cmd_string):

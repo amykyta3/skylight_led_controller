@@ -122,9 +122,8 @@ class EditColor(tkext.Dialog):
             int(self.W_var.get())
         )
         
-        if(gui_btLink.check_bt_addr()):
-            with btLink.btLink(settings.S_DATA.bt_addr) as S:
-                S.set_rgbw(C)
+        if(gui_btLink.check_bt_connected()):
+            settings.BT_LINK.set_rgbw(C)
     
     #---------------------------------------------------------------
     # Standard Action hooks

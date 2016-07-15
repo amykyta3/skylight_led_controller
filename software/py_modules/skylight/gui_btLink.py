@@ -55,3 +55,14 @@ def check_bt_addr():
     else:
         return(False)
     
+#---------------------------------------------------------------------------------------------------
+def check_bt_connected():
+    if((settings.BT_LINK == None) or (settings.BT_LINK.connected == False)):
+        messagebox.showerror(
+            title="Not Connected",
+            message="Not Connected"
+        )
+        return(False)
+    else:
+        return(True)
+    

@@ -39,3 +39,5 @@ class Skylight_Settings(ec.EncodableClass):
 
 # Handle to Skylight_Settings data object
 S_DATA = None
+
+BT_LINK = None

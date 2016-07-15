@@ -50,44 +50,64 @@ class skylight_gui(App):
         fr_main = ttk.Frame(self.tkWindow, padding = 5)
         fr_main.pack()
         
+        #--------------------------------------------------------
+        fr_bluetooth = ttk.LabelFrame(fr_main, text="Bluetooth")
+        fr_bluetooth.pack(expand=True, padx=5, pady=5, fill=tk.X)
+        self.pb_tgl_connect = ttk.Button(
+            fr_bluetooth,
+            text="Connect",
+            command=self.pb_tgl_connect_click
+        )
+        self.pb_tgl_connect.pack(fill=tk.X)
+        
+        #--------------------------------------------------------
+        fr_config = ttk.LabelFrame(fr_main, text="Configuration")
+        fr_config.pack(expand=True, padx=5, pady=5, fill=tk.X)
+        
         ttk.Button(
-            fr_main,
+            fr_config,
             text="Edit Transitions",
             command=self.pb_edit_transitions
         ).pack(fill=tk.X)
         
         ttk.Button(
-            fr_main,
+            fr_config,
             text="Edit Modeset Change Alarms",
             command=self.pb_edit_modeset_alarms
         ).pack(fill=tk.X)
         
         ttk.Button(
-            fr_main,
+            fr_config,
             text="Edit Lighting Alarms",
             command=self.pb_edit_lighting_alarms
         ).pack(fill=tk.X)
         
         ttk.Button(
-            fr_main,
+            fr_config,
             text="Send Config!",
             command=self.pb_send_cfg
         ).pack(fill=tk.X)
         
+        #--------------------------------------------------------
+        fr_clock = ttk.LabelFrame(fr_main, text="Clock")
+        fr_clock.pack(expand=True, padx=5, pady=5, fill=tk.X)
         ttk.Button(
-            fr_main,
+            fr_clock,
             text="Sync Date/Time",
             command=self.pb_sync_datetime
         ).pack(fill=tk.X)
         
+        #--------------------------------------------------------
+        fr_debug = ttk.LabelFrame(fr_main, text="Debug")
+        fr_debug.pack(expand=True, padx=5, pady=5, fill=tk.X)
         ttk.Button(
-            fr_main,
+            fr_debug,
             text="Set Color",
             command=self.pb_set_color
         ).pack(fill=tk.X)
         
         ttk.Button(
-            fr_main,
+            fr_debug,
             text="Terminal",
             command=self.pb_terminal
         ).pack(fill=tk.X)
@@ -117,29 +137,49 @@ class skylight_gui(App):
         
     def pb_send_cfg(self):
         image = settings.S_DATA.cfg.compile()
-        if(gui_btLink.check_bt_addr()):
-            with btLink.btLink(settings.S_DATA.bt_addr) as S:
-                S.set_time()
-                S.send_config(image)
+        if(gui_btLink.check_bt_connected()):
+            settings.BT_LINK.set_time()
+            settings.BT_LINK.send_config(image)
             
     def pb_sync_datetime(self):
         image = settings.S_DATA.cfg.compile()
-        if(gui_btLink.check_bt_addr()):
-            with btLink.btLink(settings.S_DATA.bt_addr) as S:
-                S.set_time()
+        if(gui_btLink.check_bt_connected()):
+            settings.BT_LINK.set_time()
             
     def pb_set_color(self):
         dlg = EditColor(self.fr, self.color)
         if(dlg.result):
             self.color = dlg.C
-            if(gui_btLink.check_bt_addr()):
-                with btLink.btLink(settings.S_DATA.bt_addr) as S:
-                    S.set_rgbw(self.color)
+            if(gui_btLink.check_bt_connected()):
+                settings.BT_LINK.set_rgbw(self.color)
 
     def pb_terminal(self):
-        if(gui_btLink.check_bt_addr()):
-            with btLink.btLink(settings.S_DATA.bt_addr) as S:
-                Terminal(self.fr, S)
+        if(gui_btLink.check_bt_connected()):
+            Terminal(self.fr, settings.BT_LINK)
+                
+    def pb_tgl_connect_click(self):
+        
+        if((settings.BT_LINK == None) or (settings.BT_LINK.connected == False)):
+            # Connect
+            
+            if(gui_btLink.check_bt_addr()):
+                
+                if(settings.BT_LINK == None):
+                    settings.BT_LINK = btLink.btLink(settings.S_DATA.bt_addr)
+                
+                try:
+                    settings.BT_LINK.open()
+                except:
+                    print("BT connect error")
+                    settings.BT_LINK = None
+                    return
+                
+                self.pb_tgl_connect.configure(text="Disconnect")
+        else:
+            # Disconnect
+            settings.BT_LINK.close()
+            
+            self.pb_tgl_connect.configure(text="Connect")
         
 ####################################################################################################
 if __name__ == '__main__':
