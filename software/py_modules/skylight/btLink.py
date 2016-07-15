@@ -36,6 +36,13 @@ class btLink:
     #-----------------------------------------------------------------------------------------------
     def open(self):
         self.S.connect((self.addr, 1))
+        
+        self.initialize_link()
+        
+        self.connected = True
+        
+    #-----------------------------------------------------------------------------------------------
+    def initialize_link(self):
         self.S.settimeout(self.timeout)
         
         # flush out any partial commands
@@ -50,8 +57,6 @@ class btLink:
         except CMDError:
             # ignore.
             pass
-        
-        self.connected = True
         
     #-----------------------------------------------------------------------------------------------
     def close(self):

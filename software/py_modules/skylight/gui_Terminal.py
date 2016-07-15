@@ -12,9 +12,8 @@ class Terminal(tkext.Dialog):
         # Start the dialog. This blocks until done.
         tkext.Dialog.__init__(self, parent = parent, title = "Terminal")
         
-        # Disable echo before exiting
-        self.btlink.S.settimeout(10)
-        self.btlink.cmd("echo 0\r\n")
+        # Reinitialize normal link before exiting
+        self.btlink.initialize_link()
         
     #---------------------------------------------------------------
     def create_body(self, master_fr):
