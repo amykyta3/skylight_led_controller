@@ -9,6 +9,7 @@ import json
 import datetime
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 
 from py_modules.python_modules.app import App
 import py_modules.python_modules.encodable_class as ec
@@ -98,6 +99,12 @@ class skylight_gui(App):
             command=self.pb_sync_datetime
         ).pack(fill=tk.X)
         
+        ttk.Button(
+            fr_clock,
+            text="Update Clock Correction",
+            command=self.pb_update_clk_correction
+        ).pack(fill=tk.X)
+        
         #--------------------------------------------------------
         fr_debug = ttk.LabelFrame(fr_main, text="Debug")
         fr_debug.pack(expand=True, padx=5, pady=5, fill=tk.X)
@@ -111,12 +118,6 @@ class skylight_gui(App):
             fr_debug,
             text="Terminal",
             command=self.pb_terminal
-        ).pack(fill=tk.X)
-        
-        ttk.Button(
-            fr_debug,
-            text="test",
-            command=self.pb_TEST
         ).pack(fill=tk.X)
         
         self.fr = fr_main
@@ -164,23 +165,67 @@ class skylight_gui(App):
         if(gui_btLink.check_bt_connected()):
             Terminal(self.fr, settings.BT_LINK)
             
-    def pb_TEST(self):
+    def pb_update_clk_correction(self):
         if(gui_btLink.check_bt_connected()):
+            # Query hardware
             ref_time = settings.BT_LINK.get_ref_time()
-            hw_time = settings.BT_LINK.get_time()
-            actual_time = datetime.datetime.now()
+            corrected_minutes = settings.BT_LINK.get_ttl_clk_correct()
             
-            print("HW Time    ", hw_time)
-            print("Actual Time", actual_time)
-            print("elapsed", actual_time - ref_time)
+            actual_time = datetime.datetime.now()
+            hw_time = settings.BT_LINK.get_time()
+            
+            if(hw_time == None):
+                messagebox.showerror(
+                    title = "Error!",
+                    message = "Time was not set. Cannot calculate clock correction."
+                )
+                return
+            
+            # Undo hardware clock correction
+            hw_time -= datetime.timedelta(minutes=corrected_minutes)
             
             elapsed = (actual_time - ref_time).total_seconds()
             delta = (actual_time - hw_time).total_seconds()
-            correction_interval = elapsed / delta
-            print("Correction interval", correction_interval)
             
-            
+            if(delta < 60):
+                messagebox.showinfo(
+                    title = "Info",
+                    message = "Hardware clock drift is less than 60 seconds. Not updating correction."
+                )
+                return
                 
+            # Hardware time is subject to rounding to nearest second.
+            # Calculate both ends of the possible interval
+            correction_interval_L = elapsed / delta
+            correction_interval_H = elapsed / (delta-1)
+            
+            # Calculate the error margin of the correction, and the original clock error
+            correction_error = abs(
+                (correction_interval_H - correction_interval_L) 
+                / ((correction_interval_H + correction_interval_L)/2)
+            )
+            clock_error = abs(delta / elapsed)
+            
+            # Only implement a new clock correction value if the new correction has a better confidence
+            # level.
+            self.log.info("Current clock error: %.4f%%" % clock_error)
+            self.log.info("Error of calculated correction: %.4f%%" % correction_error)
+            if(correction_error > clock_error):
+                messagebox.showinfo(
+                    title = "Info",
+                    message = "Not enough confidence in new correction value. Not updating correction."
+                )
+                return
+            
+            # Looks good. Pick midpoint of correction range
+            settings.S_DATA.cfg.clock_correction_interval = round((correction_interval_H + correction_interval_L) / 2)
+            
+            messagebox.showinfo(
+                title = "Info",
+                message = "Updated clock correction interval. Re-send configuration to apply."
+            )
+            
+            
     def pb_tgl_connect_click(self):
         
         if((settings.BT_LINK == None) or (settings.BT_LINK.connected == False)):
@@ -204,7 +249,7 @@ class skylight_gui(App):
             settings.BT_LINK.close()
             
             self.pb_tgl_connect.configure(text="Connect")
-        
+    
 ####################################################################################################
 if __name__ == '__main__':
     A = skylight_gui()

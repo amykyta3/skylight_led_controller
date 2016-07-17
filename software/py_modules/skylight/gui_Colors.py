@@ -1,7 +1,6 @@
 
 import tkinter as tk
 from tkinter import ttk
-from tkinter import messagebox
 
 from ..python_modules import tk_extensions as tkext
 from . import eeprom_config as eecfg

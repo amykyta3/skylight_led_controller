@@ -24,7 +24,7 @@
                     {"cfg_write"        , cmd_cfg_write       },\
                     {"chroma"           , cmd_chroma          },\
                     {"echo"             , cmd_echo            },\
-                    {"get_clk_correct"  , cmd_get_clk_correct },\
+                    {"get_ttl_clk_correct"  , cmd_get_ttl_clk_correct },\
                     {"get_ref_time"     , cmd_get_ref_time    },\
                     {"get_time"         , cmd_get_time        },\
                     {"id"               , cmd_id              },\
@@ -51,7 +51,7 @@ int cmd_rgbw(uint8_t argc, char *argv[]);
 int cmd_get_time(uint8_t argc, char *argv[]);
 int cmd_get_ref_time(uint8_t argc, char *argv[]);
 
-int cmd_get_clk_correct(uint8_t argc, char *argv[]);
+int cmd_get_ttl_clk_correct(uint8_t argc, char *argv[]);
 
 // set_time <year> <month> <day> <hour> <minute> <second>
 int cmd_set_time(uint8_t argc, char *argv[]);

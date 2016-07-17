@@ -178,6 +178,10 @@ class btLink:
         hour = int(resp[4], 16)
         minute = int(resp[5], 16)
         second = int(resp[6], 16)
+        
+        if(year == 0):
+            return(None)
+        
         T = datetime.datetime(year, month, day, hour, minute, second)
         return(T)
         
@@ -192,15 +196,19 @@ class btLink:
         hour = int(resp[4], 16)
         minute = int(resp[5], 16)
         second = int(resp[6], 16)
+        
+        if(year == 0):
+            return(None)
+        
         T = datetime.datetime(year, month, day, hour, minute, second)
         return(T)
         
     #-----------------------------------------------------------------------------------------------
-    def get_clk_correct(self):
+    def get_ttl_clk_correct(self):
         """
-        Gets the clock correction interval setting
+        Gets the number of minutes that have been added/subtracted to date.
         """
-        resp = self.cmd("get_clk_correct\r\n")
+        resp = self.cmd("get_ttl_clk_correct\r\n")
         resp = int(resp,16)
         if(resp > 0x7FFFFFFF):
             resp -= 0x100000000

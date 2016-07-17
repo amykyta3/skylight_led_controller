@@ -178,13 +178,13 @@ int cmd_get_ref_time(uint8_t argc, char *argv[]){
 }
 
 //--------------------------------------------------------------------------------------------------
-int cmd_get_clk_correct(uint8_t argc, char *argv[]){
+int cmd_get_ttl_clk_correct(uint8_t argc, char *argv[]){
     int32_t intvl;
-    intvl = calendar_get_correction_interval();
+    intvl = calendar_get_total_correction();
     uart_put_x32((uint32_t)intvl);
     return(0);
 }
-    
+
 //--------------------------------------------------------------------------------------------------
 void stop_error_led(void);
 
