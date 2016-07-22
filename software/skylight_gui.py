@@ -137,6 +137,10 @@ class skylight_gui(App):
             settings.S_DATA.cfg.modeset_change_table.alarms
         )
         
+        # Set the default modeset to the first one
+        if(len(settings.S_DATA.cfg.modeset_change_table.alarms) != 0):
+            settings.S_DATA.cfg.default_modeset = settings.S_DATA.cfg.modeset_change_table.alarms[0].data
+        
     def pb_edit_lighting_alarms(self):
         dlg = EditLightingAlarmList(
             self.fr,
@@ -186,7 +190,8 @@ class skylight_gui(App):
             
             elapsed = (actual_time - ref_time).total_seconds()
             delta = (actual_time - hw_time).total_seconds()
-            
+            self.log.info("Clock drift: %d seconds", delta)
+            self.log.info("Time elapsed: %d seconds", elapsed)
             if(delta < 60):
                 messagebox.showinfo(
                     title = "Info",

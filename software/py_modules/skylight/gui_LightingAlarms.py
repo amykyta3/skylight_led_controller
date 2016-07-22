@@ -93,7 +93,6 @@ class EditLightingAlarm(tkext.Dialog):
                 v.set(1)
         
         for i,v in enumerate(settings.S_DATA.t_list):
-            print(v)
             if(self.LA.data == v):
                 self.combo_transition.current(i)
                 break

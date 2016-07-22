@@ -415,7 +415,7 @@ class AlarmEntry(ec.EncodableClass):
         dow_mask = 0
         for dow in self.dow_list:
             dow_mask |= 2**dow
-        print("%0X" % dow_mask)
+        
         # uint8_t dayofweek_mask
         # uint8_t hour
         # uint8_t minute

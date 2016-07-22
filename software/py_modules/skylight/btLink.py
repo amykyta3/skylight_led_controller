@@ -230,7 +230,7 @@ class btLink:
         self.cmd("cfg_erase\r\n")
         
         for addr in range(0, len(image), 32):
-            page = addr/32
+            page = addr//32
             hex_str = binascii.hexlify(image[addr:addr+32]).decode('ascii')
             self.cmd("cfg_write %X %s\r\n" % (page, hex_str))
         
