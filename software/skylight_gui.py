@@ -185,37 +185,36 @@ class skylight_gui(App):
                 )
                 return
             
+            orig_corrected_elapsed = (hw_time - ref_time).total_seconds()
+            
             # Undo hardware clock correction
             hw_time -= datetime.timedelta(minutes=corrected_minutes)
             
             elapsed = (actual_time - ref_time).total_seconds()
             delta = (actual_time - hw_time).total_seconds()
-            self.log.info("Clock drift: %d seconds", delta)
-            self.log.info("Time elapsed: %d seconds", elapsed)
-            if(delta < 60):
-                messagebox.showinfo(
-                    title = "Info",
-                    message = "Hardware clock drift is less than 60 seconds. Not updating correction."
-                )
-                return
+            self.log.info("Time elapsed: %d seconds" % elapsed)
+            self.log.info("Clock drift: %d seconds" % delta)
                 
             # Hardware time is subject to rounding to nearest second.
             # Calculate both ends of the possible interval
             correction_interval_L = elapsed / delta
             correction_interval_H = elapsed / (delta-1)
             
-            # Calculate the error margin of the correction, and the original clock error
-            correction_error = abs(
-                (correction_interval_H - correction_interval_L) 
-                / ((correction_interval_H + correction_interval_L)/2)
-            )
-            clock_error = abs(delta / elapsed)
+            # If new correction interval was used instead, would it have done better?
+            def calc_err(a,b):
+                return(100 * abs((a-b)/((a+b)/2)))
+            hw_elapsed = (hw_time - ref_time).total_seconds()
+            corrected_elapsed_H = hw_elapsed + hw_elapsed/correction_interval_H
+            corrected_elapsed_L = hw_elapsed + hw_elapsed/correction_interval_L
+            old_error = calc_err(orig_corrected_elapsed, elapsed)
+            new_error = max(calc_err(corrected_elapsed_H, elapsed), calc_err(corrected_elapsed_L, elapsed))
+
             
             # Only implement a new clock correction value if the new correction has a better confidence
             # level.
-            self.log.info("Current clock error: %.4f%%" % clock_error)
-            self.log.info("Error of calculated correction: %.4f%%" % correction_error)
-            if(correction_error > clock_error):
+            self.log.info("Old correction error: %.10f%%" % old_error)
+            self.log.info("New correction error: %.10f%%" % new_error)
+            if(new_error >= old_error):
                 messagebox.showinfo(
                     title = "Info",
                     message = "Not enough confidence in new correction value. Not updating correction."
@@ -223,7 +222,10 @@ class skylight_gui(App):
                 return
             
             # Looks good. Pick midpoint of correction range
-            settings.S_DATA.cfg.clock_correction_interval = round((correction_interval_H + correction_interval_L) / 2)
+            uncertainty = abs((correction_interval_H - correction_interval_L) / 2)
+            corr_interval = round((correction_interval_H + correction_interval_L) / 2)
+            self.log.info("New correction interval: %d +/- %.2f" % (corr_interval, uncertainty))
+            settings.S_DATA.cfg.clock_correction_interval = corr_interval
             
             messagebox.showinfo(
                 title = "Info",
