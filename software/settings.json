@@ -5,24 +5,152 @@
   "cfg": {
     "<classtype>": "py_modules.skylight.eeprom_config.eeConfig",
     "<ref_id>": 1,
-    "clock_correction_interval": 0,
+    "clock_correction_interval": 4943,
     "default_modeset": {
-      "<classtype>": "<ref>",
-      "<ref_id>": 4
+      "<classtype>": "py_modules.skylight.eeprom_config.ModeSet",
+      "<ref_id>": 11,
+      "modes": [
+        [
+          {
+            "<classtype>": "py_modules.skylight.eeprom_config.trans_Immediate",
+            "<ref_id>": 12,
+            "color": {
+              "<classtype>": "py_modules.skylight.colors.Color_raw",
+              "<ref_id>": 13,
+              "b": 0,
+              "g": 0,
+              "r": 65535,
+              "w": 65535
+            },
+            "delay": 0.0,
+            "name": "Lights On"
+          },
+          {
+            "<classtype>": "<ref>",
+            "<ref_id>": 8
+          }
+        ],
+        [
+          {
+            "<classtype>": "py_modules.skylight.eeprom_config.trans_Fade",
+            "<ref_id>": 14,
+            "color": {
+              "<classtype>": "py_modules.skylight.colors.Color_raw",
+              "<ref_id>": 15,
+              "b": 0,
+              "g": 0,
+              "r": 29625,
+              "w": 27829
+            },
+            "delay": 0.0,
+            "duration": 2.0,
+            "name": "Nightlight Brighter"
+          },
+          {
+            "<classtype>": "<ref>",
+            "<ref_id>": 8
+          }
+        ],
+        [
+          {
+            "<classtype>": "py_modules.skylight.eeprom_config.trans_Fade",
+            "<ref_id>": 16,
+            "color": {
+              "<classtype>": "py_modules.skylight.colors.Color_raw",
+              "<ref_id>": 17,
+              "b": 0,
+              "g": 0,
+              "r": 17954,
+              "w": 14363
+            },
+            "delay": 0.0,
+            "duration": 2.0,
+            "name": "Nightlight On"
+          },
+          {
+            "<classtype>": "<ref>",
+            "<ref_id>": 8
+          }
+        ],
+        [
+          {
+            "<classtype>": "py_modules.skylight.eeprom_config.trans_Fade",
+            "<ref_id>": 18,
+            "color": {
+              "<classtype>": "py_modules.skylight.colors.Color_raw",
+              "<ref_id>": 19,
+              "b": 0,
+              "g": 65535,
+              "r": 0,
+              "w": 0
+            },
+            "delay": 0.0,
+            "duration": 1.0,
+            "name": "Green"
+          },
+          {
+            "<classtype>": "<ref>",
+            "<ref_id>": 8
+          }
+        ],
+        [
+          {
+            "<classtype>": "py_modules.skylight.eeprom_config.trans_Fade",
+            "<ref_id>": 20,
+            "color": {
+              "<classtype>": "py_modules.skylight.colors.Color_raw",
+              "<ref_id>": 21,
+              "b": 65535,
+              "g": 0,
+              "r": 0,
+              "w": 0
+            },
+            "delay": 0.0,
+            "duration": 1.0,
+            "name": "Blue"
+          },
+          {
+            "<classtype>": "<ref>",
+            "<ref_id>": 8
+          }
+        ],
+        [
+          {
+            "<classtype>": "py_modules.skylight.eeprom_config.trans_Fade",
+            "<ref_id>": 22,
+            "color": {
+              "<classtype>": "py_modules.skylight.colors.Color_raw",
+              "<ref_id>": 23,
+              "b": 0,
+              "g": 0,
+              "r": 65535,
+              "w": 0
+            },
+            "delay": 0.0,
+            "duration": 1.0,
+            "name": "Red"
+          },
+          {
+            "<classtype>": "<ref>",
+            "<ref_id>": 8
+          }
+        ]
+      ],
+      "name": ""
     },
     "lighting_alarm_table": {
       "<classtype>": "py_modules.skylight.eeprom_config.AlarmTable",
-      "<ref_id>": 19,
+      "<ref_id>": 2,
       "alarms": [
         {
           "<classtype>": "py_modules.skylight.eeprom_config.AlarmEntry",
-          "<ref_id>": 20,
+          "<ref_id>": 3,
           "data": {
             "<classtype>": "py_modules.skylight.eeprom_config.trans_Fade",
-            "<ref_id>": 21,
+            "<ref_id>": 4,
             "color": {
               "<classtype>": "py_modules.skylight.colors.Color_raw",
-              "<ref_id>": 22,
+              "<ref_id>": 5,
               "b": 53864,
               "g": 65535,
               "r": 65535,
@@ -45,10 +173,10 @@
         },
         {
           "<classtype>": "py_modules.skylight.eeprom_config.AlarmEntry",
-          "<ref_id>": 23,
+          "<ref_id>": 6,
           "data": {
             "<classtype>": "<ref>",
-            "<ref_id>": 21
+            "<ref_id>": 4
           },
           "dow_list": [
             0,
@@ -57,95 +185,63 @@
           "hour": 8,
           "minute": 0,
           "name": "Sunrise - Weekend"
+        },
+        {
+          "<classtype>": "py_modules.skylight.eeprom_config.AlarmEntry",
+          "<ref_id>": 7,
+          "data": {
+            "<classtype>": "py_modules.skylight.eeprom_config.trans_Immediate",
+            "<ref_id>": 8,
+            "color": {
+              "<classtype>": "py_modules.skylight.colors.Color_raw",
+              "<ref_id>": 9,
+              "b": 0,
+              "g": 0,
+              "r": 0,
+              "w": 0
+            },
+            "delay": 0.0,
+            "name": "Lights Off"
+          },
+          "dow_list": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "hour": 8,
+          "minute": 0,
+          "name": "Sunrise Off - Weekday"
+        },
+        {
+          "<classtype>": "py_modules.skylight.eeprom_config.AlarmEntry",
+          "<ref_id>": 10,
+          "data": {
+            "<classtype>": "<ref>",
+            "<ref_id>": 8
+          },
+          "dow_list": [
+            0,
+            6
+          ],
+          "hour": 9,
+          "minute": 30,
+          "name": "Sunrise Off - Weekend"
         }
       ],
       "name": ""
     },
     "modeset_change_table": {
       "<classtype>": "py_modules.skylight.eeprom_config.AlarmTable",
-      "<ref_id>": 2,
+      "<ref_id>": 24,
       "alarms": [
         {
           "<classtype>": "py_modules.skylight.eeprom_config.AlarmEntry",
-          "<ref_id>": 3,
+          "<ref_id>": 25,
           "data": {
-            "<classtype>": "py_modules.skylight.eeprom_config.ModeSet",
-            "<ref_id>": 4,
-            "modes": [
-              [
-                {
-                  "<classtype>": "py_modules.skylight.eeprom_config.trans_Immediate",
-                  "<ref_id>": 5,
-                  "color": {
-                    "<classtype>": "py_modules.skylight.colors.Color_raw",
-                    "<ref_id>": 6,
-                    "b": 0,
-                    "g": 0,
-                    "r": 65535,
-                    "w": 65535
-                  },
-                  "delay": 0.0,
-                  "name": "Lights On"
-                },
-                {
-                  "<classtype>": "py_modules.skylight.eeprom_config.trans_Immediate",
-                  "<ref_id>": 7,
-                  "color": {
-                    "<classtype>": "py_modules.skylight.colors.Color_raw",
-                    "<ref_id>": 8,
-                    "b": 0,
-                    "g": 0,
-                    "r": 0,
-                    "w": 0
-                  },
-                  "delay": 0.0,
-                  "name": "Lights Off"
-                }
-              ],
-              [
-                {
-                  "<classtype>": "py_modules.skylight.eeprom_config.trans_Fade",
-                  "<ref_id>": 9,
-                  "color": {
-                    "<classtype>": "py_modules.skylight.colors.Color_raw",
-                    "<ref_id>": 10,
-                    "b": 0,
-                    "g": 0,
-                    "r": 29625,
-                    "w": 27829
-                  },
-                  "delay": 0.0,
-                  "duration": 2.0,
-                  "name": "Nightlight Brighter"
-                },
-                {
-                  "<classtype>": "<ref>",
-                  "<ref_id>": 7
-                }
-              ],
-              [
-                {
-                  "<classtype>": "py_modules.skylight.eeprom_config.trans_Fade",
-                  "<ref_id>": 11,
-                  "color": {
-                    "<classtype>": "py_modules.skylight.colors.Color_raw",
-                    "<ref_id>": 12,
-                    "b": 0,
-                    "g": 0,
-                    "r": 17954,
-                    "w": 14363
-                  },
-                  "delay": 0.0,
-                  "duration": 2.0,
-                  "name": "Nightlight On"
-                },
-                {
-                  "<classtype>": "<ref>",
-                  "<ref_id>": 7
-                }
-              ]
-            ],
-            "name": ""
+            "<classtype>": "<ref>",
+            "<ref_id>": 11
           },
           "dow_list": [
             0,
@@ -162,22 +258,22 @@
         },
         {
           "<classtype>": "py_modules.skylight.eeprom_config.AlarmEntry",
-          "<ref_id>": 13,
+          "<ref_id>": 26,
           "data": {
             "<classtype>": "py_modules.skylight.eeprom_config.ModeSet",
-            "<ref_id>": 14,
+            "<ref_id>": 27,
             "modes": [
               [
                 {
                   "<classtype>": "<ref>",
-                  "<ref_id>": 11
+                  "<ref_id>": 16
                 },
                 {
                   "<classtype>": "py_modules.skylight.eeprom_config.trans_Fade",
-                  "<ref_id>": 15,
+                  "<ref_id>": 28,
                   "color": {
                     "<classtype>": "py_modules.skylight.colors.Color_raw",
-                    "<ref_id>": 16,
+                    "<ref_id>": 29,
                     "b": 0,
                     "g": 0,
                     "r": 0,
@@ -191,20 +287,20 @@
               [
                 {
                   "<classtype>": "<ref>",
-                  "<ref_id>": 9
+                  "<ref_id>": 14
                 },
                 {
                   "<classtype>": "<ref>",
-                  "<ref_id>": 15
+                  "<ref_id>": 28
                 }
               ],
               [
                 {
                   "<classtype>": "py_modules.skylight.eeprom_config.trans_Fade",
-                  "<ref_id>": 17,
+                  "<ref_id>": 30,
                   "color": {
                     "<classtype>": "py_modules.skylight.colors.Color_raw",
-                    "<ref_id>": 18,
+                    "<ref_id>": 31,
                     "b": 0,
                     "g": 0,
                     "r": 65535,
@@ -216,7 +312,7 @@
                 },
                 {
                   "<classtype>": "<ref>",
-                  "<ref_id>": 7
+                  "<ref_id>": 8
                 }
               ]
             ],
@@ -242,31 +338,43 @@
   "t_list": [
     {
       "<classtype>": "<ref>",
-      "<ref_id>": 21
+      "<ref_id>": 4
     },
     {
       "<classtype>": "<ref>",
-      "<ref_id>": 5
+      "<ref_id>": 12
     },
     {
       "<classtype>": "<ref>",
-      "<ref_id>": 7
+      "<ref_id>": 8
     },
     {
       "<classtype>": "<ref>",
-      "<ref_id>": 11
+      "<ref_id>": 16
     },
     {
       "<classtype>": "<ref>",
-      "<ref_id>": 17
+      "<ref_id>": 30
     },
     {
       "<classtype>": "<ref>",
-      "<ref_id>": 15
+      "<ref_id>": 28
     },
     {
       "<classtype>": "<ref>",
-      "<ref_id>": 9
+      "<ref_id>": 14
+    },
+    {
+      "<classtype>": "<ref>",
+      "<ref_id>": 18
+    },
+    {
+      "<classtype>": "<ref>",
+      "<ref_id>": 20
+    },
+    {
+      "<classtype>": "<ref>",
+      "<ref_id>": 22
     }
   ]
 }
